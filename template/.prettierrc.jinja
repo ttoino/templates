@@ -4,11 +4,22 @@
     "tabWidth": 4,
     "trailingComma": "all",
     "useTabs": false,
-    // "tailwindStylesheet": "src/app.css",
-    // "tailwindFunctions": ["clsx", "cn", "tv", "twMerge"],
+{% if tailwind %}
+    "tailwindAttributes": ["/^\\w+Class$/"],
+    "tailwindStylesheet": "./src/app.css",
+    "tailwindFunctions": ["tv", "twMerge"],
+{% endif %}
     "plugins": [
+{% if _is_svelte %}
         "prettier-plugin-svelte"
-        // , "prettier-plugin-tailwindcss"
+{% endif %}
+{% if tailwind %}
+{% if _is_svelte %}
+        , "prettier-plugin-tailwindcss"
+{% else %}
+        "prettier-plugin-tailwindcss"
+{% endif %}
+{% endif %}
     ],
     "overrides": [
         {
@@ -18,7 +29,7 @@
             }
         },
         {
-            "files": "*.yml",
+            "files": ["*.yml", "*.yaml"],
             "options": {
                 "tabWidth": 2
             }

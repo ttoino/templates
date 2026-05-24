@@ -1,5 +1,7 @@
 {
+{% if project_type in ['sveltekit', 'library'] %}
     "extends": "./.svelte-kit/tsconfig.json",
+{% endif %}
     "compilerOptions": {
         "allowJs": true,
         "checkJs": true,
@@ -9,6 +11,11 @@
         "skipLibCheck": true,
         "sourceMap": true,
         "strict": true,
+        "module": "NodeNext",
+{% if project_type == 'worker' %}
         "moduleResolution": "bundler"
+{% else %}
+        "moduleResolution": "NodeNext"
+{% endif %}
     }
 }

@@ -11,10 +11,10 @@ updates:
         patterns:
           - "eslint"
           - "@eslint/*"
-      # tailwind:
-      #   patterns:
-      #     - "tailwindcss"
-      #     - "@tailwindcss/*"
+      tailwind:
+        patterns:
+          - "tailwindcss"
+          - "@tailwindcss/*"
       svelte:
         patterns:
           - "svelte"

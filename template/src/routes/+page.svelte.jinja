@@ -1,0 +1,14 @@
+{% if svelte_m3c %}<script lang="ts">
+    import { Provider } from "svelte-m3c";
+</script>
+
+<Provider>
+    <h1 class="text-headline-large text-primary">Welcome to {{ project_name }}</h1>
+</Provider>
+{% else %}
+<script lang="ts">
+    // Add your page logic here
+</script>
+
+<h1>Welcome to {{ project_name }}</h1>
+{% endif %}

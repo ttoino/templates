@@ -1,0 +1,105 @@
+{
+    "name": "{{ project_name }}",
+    "version": "0.0.1",
+    "description": "{{ project_description }}",
+    "type": "module",
+{% if project_type == 'library' %}
+    "license": "GPL-3.0-or-later",
+    "files": [
+        "dist",
+        "!dist/**/*.test.*",
+        "!dist/**/*.spec.*"
+    ],
+    "sideEffects": [
+        "**/*.css"
+    ],
+    "svelte": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "svelte": "./dist/index.js",
+            "default": "./dist/index.js"
+        }
+    },
+    "peerDependencies": {
+        "svelte": "^5.0.0"
+    },
+{% endif %}
+    "scripts": {
+{% if project_type == 'worker' %}
+        "dev": "wrangler dev",
+        "check": "tsc --noEmit",
+{% else %}
+        "dev": "vite dev",
+        "build": "vite build{% if project_type == 'library' %} && pnpm run prepack{% endif %}",
+        "preview": "pnpm run build && wrangler dev",
+{% if project_type == 'library' %}
+        "prepare": "svelte-kit sync || echo ''",
+        "prepack": "svelte-kit sync && svelte-package && publint",
+{% endif %}
+        "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+        "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+{% endif %}
+        "lint": "eslint .",
+        "lint:fix": "eslint --fix .",
+        "format": "prettier --check .",
+        "format:fix": "prettier --write .",
+        "gen": "pnpm run gen:cf-types",
+        "gen:cf-types": "wrangler types{% if project_type in ['sveltekit', 'library'] %} src/worker-configuration.d.ts{% endif %}"
+{% if _has_tests %}
+        ,"test": "vitest"
+{% endif %}
+    },
+{% if project_type == 'worker' %}
+    "dependencies": {
+        "hono": "^4.12.0"
+    },
+{% endif %}
+    "devDependencies": {
+        "@eslint/compat": "^2.1.0",
+        "@eslint/js": "^10.0.1",
+        "eslint": "^10.4.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-perfectionist": "^5.9.0",
+        "globals": "^17.6.0",
+        "prettier": "^3.8.3",
+        "typescript": "^6.0.3",
+        "typescript-eslint": "^8.59.4",
+        "wrangler": "^4.94.0"
+{% if project_type in ['sveltekit', 'library'] %}
+        ,"@sveltejs/adapter-cloudflare": "^7.2.8"
+        ,"@sveltejs/kit": "^2.59.0"
+        ,"@sveltejs/vite-plugin-svelte": "^7.0.0"
+        ,"prettier-plugin-svelte": "^3.5.1"
+        ,"svelte": "^5.55.5"
+        ,"svelte-check": "^4.4.7"
+        ,"vite": "^8.0.10"
+{% endif %}
+{% if project_type == 'library' %}
+        ,"@sveltejs/package": "^2.5.7"
+        ,"publint": "^0.3.18"
+{% endif %}
+{% if tailwind %}
+        ,"@tailwindcss/vite": "^4.2.4"
+        ,"prettier-plugin-tailwindcss": "^0.8.0"
+        ,"tailwindcss": "^4.2.4"
+{% endif %}
+{% if svelte_m3c %}
+        ,"bits-ui": "^2.18.0"
+        ,"svelte-m3c": "^0.0.5"
+        ,"tailwind-merge": "^3.5.0"
+        ,"tailwind-variants": "^3.2.2"
+{% endif %}
+{% if _has_tests %}
+        ,"vitest": "^4.1.7"
+{% endif %}
+{% if _has_browser_tests %}
+        ,"@vitest/browser-playwright": "^4.1.5"
+{% endif %}
+{% if playwright %}
+        ,"playwright": "^1.59.1"
+{% endif %}
+    },
+    "packageManager": "pnpm@11.2.2+sha512.36e6621fad506178936455e70247b8808ef4ec25797a9f437a93281a020484e2607f6a469a22e982987c3dbb8866e3071514ab10a4a1749e06edcd1ec118436f"
+}

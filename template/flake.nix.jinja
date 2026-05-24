@@ -1,0 +1,55 @@
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+{% if playwright %}
+    playwright = {
+      url = "github:pietdevries94/playwright-web-flake/1.59.1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+{% endif %}
+  };
+
+  outputs =
+    {
+      nixpkgs,
+{% if playwright %}
+      playwright,
+      self,
+{% endif %}
+      ...
+    }:
+    let
+      system = "x86_64-linux";
+{% if playwright %}
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [ self.overlays.default ];
+      };
+{% else %}
+      pkgs = nixpkgs.legacyPackages.${system};
+{% endif %}
+    in
+    {
+{% if playwright %}
+      overlays.default = final: prev: {
+        inherit (playwright.packages.${system}) playwright-test playwright-driver;
+      };
+
+{% endif %}
+      devShells.${system}.default = pkgs.mkShell {
+        packages = with pkgs; [
+          nodejs
+          corepack
+        ];
+
+{% if playwright %}
+        shellHook = ''
+          export PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=true
+          export PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true
+          export PLAYWRIGHT_HOST_PLATFORM_OVERRIDE="ubuntu-24.04"
+          export PLAYWRIGHT_BROWSERS_PATH=${pkgs.playwright-driver.browsers}
+        '';
+{% endif %}
+      };
+    };
+}

@@ -1,0 +1,11 @@
+# Lockfiles
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+bun.lock
+flake.lock
+
+# Generated
+dist/
+build/
+.svelte-kit/

@@ -2,12 +2,14 @@ import { includeIgnoreFile } from "@eslint/compat";
 import js from "@eslint/js";
 import prettier from "eslint-config-prettier";
 import perfectionist from "eslint-plugin-perfectionist";
-import svelte from "eslint-plugin-svelte";
 import globals from "globals";
 import { fileURLToPath } from "node:url";
 import ts from "typescript-eslint";
-
+{% if project_type in ['sveltekit', 'library'] %}
+import svelte from "eslint-plugin-svelte";
 import svelteConfig from "./svelte.config.js";
+{% endif %}
+
 const gitignorePath = fileURLToPath(new URL("./.gitignore", import.meta.url));
 
 export default ts.config(
@@ -18,8 +20,8 @@ export default ts.config(
     {
         languageOptions: {
             globals: {
-                ...globals.browser,
-                ...globals.node,
+                {% if project_type == 'worker' %}...globals.node{% else %}...globals.browser,
+                ...globals.node{% endif %},
             },
         },
     },
@@ -50,6 +52,7 @@ export default ts.config(
             ]),
         ),
     },
+{% if project_type in ['sveltekit', 'library'] %}
 
     ...svelte.configs.all,
     {
@@ -60,10 +63,14 @@ export default ts.config(
                     script: ["ts"],
                 },
             ],
+            "svelte/consistent-selector-style": "off",
             "svelte/experimental-require-strict-events": "off",
             "svelte/no-inline-styles": "off",
+            "svelte/no-navigation-without-base": "off",
+            "svelte/no-top-level-browser-globals": "off",
             "svelte/no-unused-class-name": "off",
             "svelte/require-optimized-style-attribute": "off",
+            "svelte/valid-compile": "off",
         },
     },
     {
@@ -79,7 +86,10 @@ export default ts.config(
             },
         },
     },
+{% endif %}
 
     prettier,
+{% if project_type in ['sveltekit', 'library'] %}
     ...svelte.configs.prettier,
+{% endif %}
 );
