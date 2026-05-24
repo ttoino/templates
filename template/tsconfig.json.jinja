@@ -1,5 +1,5 @@
 {
-{% if project_type in ['sveltekit', 'library'] %}
+{% if _svelte %}
     "extends": "./.svelte-kit/tsconfig.json",
 {% endif %}
     "compilerOptions": {
@@ -12,10 +12,15 @@
         "sourceMap": true,
         "strict": true,
         "module": "NodeNext",
-{% if project_type == 'worker' %}
+{% if type == 'worker' %}
         "moduleResolution": "bundler"
 {% else %}
         "moduleResolution": "NodeNext"
 {% endif %}
     }
+{% if type == 'worker' %}
+    ,
+    "exclude": ["tests"],
+    "include": ["worker-configuration.d.ts", "src/**/*.ts"]
+{% endif %}
 }

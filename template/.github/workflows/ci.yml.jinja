@@ -72,16 +72,14 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-{% if project_type in ['sveltekit', 'library'] %}
 
       - name: Generate Cloudflare types
         run: pnpm run gen:cf-types
-{% endif %}
 
       - name: Run typecheck
         run: pnpm run check
 
-{% if _has_tests %}
+{% if tests %}
   test:
     name: Test
     runs-on: ubuntu-latest
@@ -101,7 +99,7 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-{% if _has_browser_tests or playwright %}
+{% if browser_tests %}
 
       - name: Install playwright dependencies
         run: pnpm exec playwright install --with-deps
@@ -130,11 +128,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-{% if _has_browser_tests or playwright %}
-
-      - name: Install playwright dependencies
-        run: pnpm exec playwright install --with-deps
-{% endif %}
 
       - name: Run build
         run: pnpm run build

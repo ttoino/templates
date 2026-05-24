@@ -15,8 +15,8 @@ copier copy ~/projects/templates ~/projects/my-new-app
 
 # Create with pre-answered questions
 copier copy ~/projects/templates ~/projects/my-new-app \
-  -d 'project_name=my-new-app' \
-  -d 'project_type=sveltekit' \
+  -d 'name=my-new-app' \
+  -d 'type=sveltekit' \
   -d 'tailwind=true'
 
 # Update an existing project when templates change

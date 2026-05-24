@@ -2,76 +2,55 @@ _min_copier_version: "9.0.0"
 
 _subdirectory: template
 
-project_name:
+name:
     type: str
     help: Project name (kebab-case, used in package.json and wrangler.jsonc)
+    default: "{{ _copier_conf.dst_path.name }}"
     validator: >-
-        {% if not (project_name | regex_search('^[a-z][a-z0-9\-]+$')) %}
-        project_name must start with a letter, followed by one or more letters, digits, or dashes, all lowercase.
+        {% if not (name | regex_search('^[a-z][a-z0-9\-]+$')) %}
+        name must start with a letter, followed by one or more letters, digits, or dashes, all lowercase.
         {% endif %}
 
-project_description:
+description:
     type: str
     help: Short description of the project
 
-project_type:
+type:
     type: str
     help: What type of project is this?
     choices:
-        SvelteKit app (Cloudflare Workers): sveltekit
         Cloudflare Worker (Hono): worker
-        Svelte library with demo site: library
-    default: SvelteKit app (Cloudflare Workers)
+        SvelteKit app: sveltekit
+        Svelte(Kit) library: library
 
 tailwind:
     type: bool
-    help: Include Tailwind CSS v4?
-    default: true
-    when: "{{ project_type != 'worker' }}"
+    help: Include Tailwind CSS?
+    default: "{{ type != 'worker' }}"
+    when: "{{ type != 'worker' }}"
 
 svelte_m3c:
     type: bool
-    help: Include svelte-m3c (Material Design 3 components)?
+    help: Include Svelte M3C?
     default: false
-    when: "{{ tailwind and project_type != 'worker' }}"
+    when: "{{ tailwind }}"
 
-testing:
-    type: str
-    help: Testing setup
-    choices:
-        - None
-        - Vitest (unit only)
-        - Vitest + browser tests
-    default: Vitest (unit only)
-    when: "{{ project_type != 'worker' }}"
-
-playwright:
+tests:
     type: bool
-    help: Include Playwright (for browser tests or image generation)?
+    help: Include Vitest?
+    default: true
+
+browser_tests:
+    type: bool
+    help: Include Playwright?
     default: false
-    when: "{{ project_type != 'worker' }}"
+    when: "{{ type != 'worker' }}"
 
 # Computed values
-_is_svelte: "{{ project_type in ['sveltekit', 'library'] }}"
-_has_tests: "{{ testing != 'None' and project_type != 'worker' }}"
-_has_browser_tests: "{{ testing == 'Vitest + browser tests' and project_type != 'worker' }}"
-
-_exclude:
-    - "{% if project_type != 'worker' %}src/index.ts{% endif %}"
-    - "{% if project_type != 'worker' %}src/app.ts{% endif %}"
-    - "{% if project_type == 'worker' %}svelte.config.js{% endif %}"
-    - "{% if project_type == 'worker' %}vite.config.ts{% endif %}"
-    - "{% if project_type == 'worker' %}src/app.css{% endif %}"
-    - "{% if project_type == 'worker' %}src/app.d.ts{% endif %}"
-    - "{% if project_type == 'worker' %}src/app.html{% endif %}"
-    - "{% if project_type == 'worker' %}src/routes/{% endif %}"
-    - "{% if project_type == 'worker' %}src/lib/{% endif %}"
-    - "{% if project_type == 'worker' %}static/{% endif %}"
-    - "{% if not _has_tests %}tests/{% endif %}"
-    - "{% if project_type != 'library' %}.github/workflows/cd.yml{% endif %}"
+_svelte: "{{ type in ['sveltekit', 'library'] }}"
 
 _message_after_copy: |
-    Project "{{ project_name }}" created successfully!
+    Project "{{ name }}" created successfully!
 
     Next steps:
     1. cd {{ _copier_conf.dst_path }}

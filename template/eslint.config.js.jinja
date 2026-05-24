@@ -5,7 +5,7 @@ import perfectionist from "eslint-plugin-perfectionist";
 import globals from "globals";
 import { fileURLToPath } from "node:url";
 import ts from "typescript-eslint";
-{% if project_type in ['sveltekit', 'library'] %}
+{% if _svelte %}
 import svelte from "eslint-plugin-svelte";
 import svelteConfig from "./svelte.config.js";
 {% endif %}
@@ -20,7 +20,7 @@ export default ts.config(
     {
         languageOptions: {
             globals: {
-                {% if project_type == 'worker' %}...globals.node{% else %}...globals.browser,
+                {% if type == 'worker' %}...globals.node{% else %}...globals.browser,
                 ...globals.node{% endif %},
             },
         },
@@ -52,7 +52,7 @@ export default ts.config(
             ]),
         ),
     },
-{% if project_type in ['sveltekit', 'library'] %}
+{% if _svelte %}
 
     ...svelte.configs.all,
     {
@@ -89,7 +89,7 @@ export default ts.config(
 {% endif %}
 
     prettier,
-{% if project_type in ['sveltekit', 'library'] %}
+{% if _svelte %}
     ...svelte.configs.prettier,
 {% endif %}
 );
