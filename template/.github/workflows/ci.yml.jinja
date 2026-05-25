@@ -78,7 +78,6 @@ jobs:
 
       - name: Run typecheck
         run: pnpm run check
-
 {% if tests %}
   test:
     name: Test
@@ -98,17 +97,14 @@ jobs:
           cache: "pnpm"
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-{% if browser_tests %}
+        run: pnpm install --frozen-lockfile{% if browser_tests %}
 
       - name: Install playwright dependencies
-        run: pnpm exec playwright install --with-deps
-{% endif %}
+        run: pnpm exec playwright install --with-deps{% endif %}
 
       - name: Run test
         run: pnpm run test
 {% endif %}
-
   build:
     name: Build
     runs-on: ubuntu-latest

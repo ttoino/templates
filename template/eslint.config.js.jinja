@@ -2,15 +2,13 @@ import { includeIgnoreFile } from "@eslint/compat";
 import js from "@eslint/js";
 import prettier from "eslint-config-prettier";
 import perfectionist from "eslint-plugin-perfectionist";
-import globals from "globals";
+{% if type in ['sveltekit', 'library'] %}import svelte from "eslint-plugin-svelte";
+{% endif %}import globals from "globals";
 import { fileURLToPath } from "node:url";
 import ts from "typescript-eslint";
-{% if _svelte %}
-import svelte from "eslint-plugin-svelte";
+{% if type in ['sveltekit', 'library'] %}
 import svelteConfig from "./svelte.config.js";
-{% endif %}
-
-const gitignorePath = fileURLToPath(new URL("./.gitignore", import.meta.url));
+{% endif -%}const gitignorePath = fileURLToPath(new URL("./.gitignore", import.meta.url));
 
 export default ts.config(
     includeIgnoreFile(gitignorePath),
@@ -52,9 +50,7 @@ export default ts.config(
             ]),
         ),
     },
-{% if _svelte %}
-
-    ...svelte.configs.all,
+{% if type in ['sveltekit', 'library'] %}    ...svelte.configs.all,
     {
         rules: {
             "svelte/block-lang": [
@@ -86,10 +82,6 @@ export default ts.config(
             },
         },
     },
-{% endif %}
-
-    prettier,
-{% if _svelte %}
-    ...svelte.configs.prettier,
-{% endif %}
+{% endif %}    prettier,{% if type in ['sveltekit', 'library'] %}
+    ...svelte.configs.prettier,{% endif %}
 );

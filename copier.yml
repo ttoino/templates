@@ -14,6 +14,7 @@ name:
 description:
     type: str
     help: Short description of the project
+    default: "A project built with this template"
 
 type:
     type: str
@@ -45,9 +46,6 @@ browser_tests:
     help: Include Playwright?
     default: false
     when: "{{ type != 'worker' }}"
-
-# Computed values
-_svelte: "{{ type in ['sveltekit', 'library'] }}"
 
 _message_after_copy: |
     Project "{{ name }}" created successfully!

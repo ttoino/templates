@@ -15,13 +15,12 @@ This is a [Copier](https://copier.readthedocs.io/) template repository. It gener
 | Variable | Type | Meaning |
 |----------|------|---------|
 | `name` | str | Project name (kebab-case). Default: destination directory name. |
-| `description` | str | Optional project description. Default: `""`. |
+| `description` | str | Project description. Default: `"A project built with this template"`. |
 | `type` | str | `worker`, `sveltekit`, or `library`. |
 | `tailwind` | bool | Only asked when `type != 'worker'`. |
 | `svelte_m3c` | bool | Only asked when `tailwind` is true. |
 | `tests` | bool | Include Vitest (and `@cloudflare/vitest-pool-workers` for workers). |
 | `browser_tests` | bool | Only asked when `type != 'worker'`. Adds `@vitest/browser-playwright` + Playwright. |
-| `_svelte` | computed | `type in ['sveltekit', 'library']`. Used in template conditionals. |
 
 ## Important conventions
 

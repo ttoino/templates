@@ -4,23 +4,10 @@
     "tabWidth": 4,
     "trailingComma": "all",
     "useTabs": false,
-{% if tailwind %}
-    "tailwindAttributes": ["/^\\w+Class$/"],
+{% if tailwind %}    "tailwindAttributes": ["/^\\w+Class$/"],
     "tailwindStylesheet": "./src/app.css",
     "tailwindFunctions": ["tv", "twMerge"],
-{% endif %}
-    "plugins": [
-{% if _svelte %}
-        "prettier-plugin-svelte"
-{% endif %}
-{% if tailwind %}
-{% if _svelte %}
-        , "prettier-plugin-tailwindcss"
-{% else %}
-        "prettier-plugin-tailwindcss"
-{% endif %}
-{% endif %}
-    ],
+{% endif %}    "plugins": [{% if type in ['sveltekit', 'library'] %}"prettier-plugin-svelte"{% endif %}{% if tailwind %}{% if type in ['sveltekit', 'library'] %}, {% endif %}"prettier-plugin-tailwindcss"{% endif %}],
     "overrides": [
         {
             "files": "*.svelte",

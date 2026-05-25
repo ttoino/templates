@@ -9,3 +9,6 @@ flake.lock
 dist/
 build/
 .svelte-kit/
+
+# Copier
+.copier-answers.yml

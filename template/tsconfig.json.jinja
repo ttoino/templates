@@ -1,8 +1,6 @@
 {
-{% if _svelte %}
-    "extends": "./.svelte-kit/tsconfig.json",
-{% endif %}
-    "compilerOptions": {
+{% if type in ['sveltekit', 'library'] %}    "extends": "./.svelte-kit/tsconfig.json",
+{% endif %}    "compilerOptions": {
         "allowJs": true,
         "checkJs": true,
         "esModuleInterop": true,
@@ -11,16 +9,12 @@
         "skipLibCheck": true,
         "sourceMap": true,
         "strict": true,
-        "module": "NodeNext",
-{% if type == 'worker' %}
+{% if type == 'worker' %}        "module": "es2022",
         "moduleResolution": "bundler"
-{% else %}
-        "moduleResolution": "NodeNext"
-{% endif %}
-    }
-{% if type == 'worker' %}
-    ,
+    },
     "exclude": ["tests"],
     "include": ["worker-configuration.d.ts", "src/**/*.ts"]
-{% endif %}
-}
+{% endif %}{% if type in ['sveltekit', 'library'] %}        "module": "NodeNext",
+        "moduleResolution": "NodeNext"
+    }
+{% endif %}}

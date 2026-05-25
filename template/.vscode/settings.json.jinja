@@ -1,7 +1,6 @@
-{
-{% if _svelte %}
-    "svelte.enable-ts-plugin": true{% if tailwind %},
-    "tailwindCSS.experimental.configFile": "src/app.css",
+{% if type in ['sveltekit', 'library'] %}{
+    "svelte.enable-ts-plugin": true{% if tailwind %},{% endif %}
+{% if tailwind %}    "tailwindCSS.experimental.configFile": "src/app.css",
     "tailwindCSS.classFunctions": ["tv", "twMerge"],
     "tailwindCSS.classAttributes": [
         "class",
@@ -13,5 +12,4 @@
     "files.associations": {
         "*.css": "tailwindcss"
     }
-{% endif %}{% endif %}
-}
+{% endif %}}{% else %}{}{% endif %}

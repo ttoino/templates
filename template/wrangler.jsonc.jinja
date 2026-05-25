@@ -1,27 +1,24 @@
 {
     "$schema": "node_modules/wrangler/config-schema.json",
     "name": "{{ name }}",
-{% if type == 'worker' %}
-    "main": "src/index.ts",
-{% else %}
-    "main": ".svelte-kit/cloudflare/_worker.js",
+{% if type == 'worker' %}    "main": "src/index.ts",
+{% else %}    "main": ".svelte-kit/cloudflare/_worker.js",
     "assets": {
         "binding": "ASSETS",
         "directory": ".svelte-kit/cloudflare",
-        "not_found_handling": "none"
+        "not_found_handling": "none",
     },
-{% endif %}
-    "compatibility_date": "2026-05-24",
+{% endif %}    "compatibility_date": "2026-05-24",
     "compatibility_flags": ["nodejs_compat"],
     "workers_dev": true,
     "preview_urls": true,
     "observability": {
         "enabled": true,
         "logs": {
-            "enabled": true
+            "enabled": true,
         },
         "traces": {
-            "enabled": true
-        }
-    }
+            "enabled": true,
+        },
+    },
 }
