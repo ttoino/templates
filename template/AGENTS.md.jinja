@@ -2,9 +2,9 @@
 
 ## Project Overview
 
-{{ description }}
+{% if description %}{{ description }}
 
-**Type**: {{ type }}{% if type in ['sveltekit', 'library'] %} + SvelteKit 2 + Svelte 5{% endif %}{% if tailwind %} + Tailwind CSS v4{% endif %}{% if svelte_m3c %} + svelte-m3c{% endif %}
+{% endif %}**Type**: {{ type }}{% if type in ['sveltekit', 'library'] %} + SvelteKit 2 + Svelte 5{% endif %}{% if tailwind %} + Tailwind CSS v4{% endif %}{% if svelte_m3c %} + svelte-m3c{% endif %}
 **Runtime**: Cloudflare Workers
 **Package Manager**: pnpm 11.2.2
 
