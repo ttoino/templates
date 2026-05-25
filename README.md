@@ -11,10 +11,10 @@ Copier-based project scaffolding for personal TypeScript/Node.js projects.
 
 ```bash
 # Create a new project interactively
-copier copy ~/projects/templates ~/projects/my-new-app
+copier copy gh:ttoino/templates ~/projects/my-new-app
 
 # Create with pre-answered questions
-copier copy ~/projects/templates ~/projects/my-new-app \
+copier copy gh:ttoino/templates ~/projects/my-new-app \
   -d 'name=my-new-app' \
   -d 'type=sveltekit' \
   -d 'tailwind=true'
