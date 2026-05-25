@@ -1,3 +1,8 @@
-{% if tailwind %}@import "tailwindcss";
+{% if svelte_m3c %}@import "svelte-m3c/imports";
+@import "tailwindcss";
+@import "svelte-m3c";
+
+@source "../node_modules/svelte-m3c";
+{% elif tailwind %}@import "tailwindcss";
 {% else %}/* Add your global styles here */
 {% endif -%}
