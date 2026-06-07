@@ -34,6 +34,7 @@ This is a [Copier](https://copier.readthedocs.io/) template repository. It gener
 - **Svelte tests** use plain Vitest with `tests/setup.ts` and `tests/dummy.test.ts`.
 - **`worker-configuration.d.ts`** is gitignored and auto-generated via `wrangler types`.
 - All generated projects are **GPL-3.0-or-later**.
+- Generated projects use **Renovate** for dependency automation.
 
 ## Common edits
 

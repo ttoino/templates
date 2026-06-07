@@ -42,6 +42,7 @@ copier update ~/projects/my-existing-app
 - **Playwright** (optional)
 - **Cloudflare Workers** deployment via Wrangler
 - **Nix flake** for reproducible dev environment
+- **Renovate** dependency automation (single monthly PR, auto-merge devDependencies, Nix lockfile support)
 - **GitHub Actions** CI (and CD for libraries)
 
 ## Standardized Conventions
