@@ -30,6 +30,7 @@ This is a [Copier](https://copier.readthedocs.io/) template repository. It gener
 - **ESLint**: `typescript-eslint` strict + `perfectionist/recommended-alphabetical`. Use `// @sort` comments to partition sorting.
 - **Svelte**: All `.svelte` files must use `<script lang="ts">` (enforced by `svelte/block-lang`).
 - **Wrangler**: `not_found_handling: "none"` (not `"404-page"`). Observability logs and traces are explicitly enabled. `build.command` is `"pnpm build"`, `previews` is an empty placeholder, and `upload_source_maps` is `true`.
+- **CI/CD**: Uses a shared composite action at `.github/actions/setup-project` for checkout, pnpm, Node, and dependencies. CD uses npm provenance (`id-token: write`) and follows the `workers-php` pattern: tag/version check, skip-if-already-published, and `pnpm publish --access public --no-git-checks`.
 - **Worker tests** use `@cloudflare/vitest-pool-workers` with a `vitest.config.ts` (not `.mts`).
 - **Svelte tests** use plain Vitest with `tests/setup.ts` and `tests/dummy.test.ts`.
 - **`worker-configuration.d.ts`** is gitignored and auto-generated via `wrangler types`.

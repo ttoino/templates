@@ -1,32 +1,37 @@
 name: CD
 
 on:
-  release:
-    types: [published]
-  workflow_dispatch:
+    release:
+        types: [published]
+    workflow_dispatch:
+
+permissions:
+    contents: read
+    id-token: write
 
 jobs:
-  publish:
-    name: Publish
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+    publish:
+        name: Publish
+        runs-on: ubuntu-latest
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
+        steps:
+            - uses: ./.github/actions/setup-project
 
-      - name: Install node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: "pnpm"
-          registry-url: "https://registry.npmjs.org"
+            - name: Check the tag matches the package version
+              if: github.event_name == 'release'
+              run: |
+                  tag="${GITHUB_REF_NAME#v}"
+                  pkg=$(node -p "require('./package.json').version")
+                  if [ "$tag" != "$pkg" ]; then
+                      echo "::error::tag ${GITHUB_REF_NAME} does not match {{ name }}@${pkg}"
+                      exit 1
+                  fi
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Publish to npm
-        run: pnpm publish
-        env:
-          NODE_AUTH_TOKEN: {% raw %}${{ secrets.NPM_TOKEN }}{% endraw %}
+            - name: Publish to npm
+              run: |
+                  pkg=$(node -p "require('./package.json').version")
+                  if pnpm view "{{ name }}@${pkg}" version > /dev/null 2>&1; then
+                      echo "::notice::{{ name }}@${pkg} is already on the registry; skipping"
+                      exit 0
+                  fi
+                  pnpm publish --access public --no-git-checks

@@ -1,129 +1,52 @@
 name: CI
 
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main, develop]
+    push:
+        branches: [main, develop]
+    pull_request:
+        branches: [main, develop]
 
 jobs:
-  format:
-    name: Format
-    runs-on: ubuntu-latest
+    format:
+        name: Format
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+        steps:
+            - uses: ./.github/actions/setup-project
+            - run: pnpm run format
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
+    lint:
+        name: Lint
+        runs-on: ubuntu-latest
 
-      - name: Install node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: "pnpm"
+        steps:
+            - uses: ./.github/actions/setup-project
+            - run: pnpm run lint
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+    typecheck:
+        name: Typecheck
+        runs-on: ubuntu-latest
 
-      - name: Run format
-        run: pnpm run format
-
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Install node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run lint
-        run: pnpm run lint
-
-  typecheck:
-    name: Typecheck
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Install node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Generate Cloudflare types
-        run: pnpm run gen:cf-types
-
-      - name: Run typecheck
-        run: pnpm run check
+        steps:
+            - uses: ./.github/actions/setup-project
+            - run: pnpm run gen:cf-types
+            - run: pnpm run check
 {% if tests %}
-  test:
-    name: Test
-    runs-on: ubuntu-latest
+    test:
+        name: Test
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Install node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile{% if browser_tests %}
-
-      - name: Install playwright dependencies
-        run: pnpm exec playwright install --with-deps{% endif %}
-
-      - name: Run test
-        run: pnpm run test
+        steps:
+            - uses: ./.github/actions/setup-project
+{% if browser_tests %}
+            - run: pnpm exec playwright install --with-deps
 {% endif %}
-  build:
-    name: Build
-    runs-on: ubuntu-latest
+            - run: pnpm run test
+{% endif %}
+    build:
+        name: Build
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Install node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run build
-        run: pnpm run build
+        steps:
+            - uses: ./.github/actions/setup-project
+            - run: pnpm run build
