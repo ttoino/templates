@@ -1,0 +1,125 @@
+name: CI
+
+on:
+    push:
+        branches: [main, develop]
+    pull_request:
+        branches: [main, develop]
+
+jobs:
+    generate-and-check:
+        name: Generate and check (${{ matrix.name }})
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - name: worker
+                      type: worker
+                      tests: "true"
+                    - name: sveltekit
+                      type: sveltekit
+                      tailwind: "true"
+                      svelte_m3c: "false"
+                      tests: "true"
+                      browser_tests: "true"
+                    - name: library
+                      type: library
+                      tailwind: "false"
+                      tests: "true"
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+
+            - name: Set up Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: "3.13"
+
+            - name: Install Copier
+              run: pip install copier
+
+            - name: Generate project
+              run: |
+                  DATA_ARGS=(
+                    "--data" "name=ci-test"
+                    "--data" "description=CI test project"
+                    "--data" "type=${{ matrix.type }}"
+                    "--data" "tests=${{ matrix.tests }}"
+                  )
+                  [[ -n "${{ matrix.tailwind }}" ]] && DATA_ARGS+=("--data" "tailwind=${{ matrix.tailwind }}")
+                  [[ -n "${{ matrix.svelte_m3c }}" ]] && DATA_ARGS+=("--data" "svelte_m3c=${{ matrix.svelte_m3c }}")
+                  [[ -n "${{ matrix.browser_tests }}" ]] && DATA_ARGS+=("--data" "browser_tests=${{ matrix.browser_tests }}")
+                  copier copy --trust --defaults "${DATA_ARGS[@]}" . "${{ runner.temp }}/generated"
+
+            - name: Get pnpm version
+              id: pnpm-version
+              working-directory: "${{ runner.temp }}/generated"
+              run: |
+                  version=$(python3 -c "import json; pm=json.load(open('package.json')).get('packageManager',''); print(pm.replace('pnpm@','').split('+')[0])")
+                  echo "version=$version" >> "$GITHUB_OUTPUT"
+
+            - name: Install Node
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 22
+
+            - name: Install pnpm
+              run: npm install -g pnpm@${{ steps.pnpm-version.outputs.version }}
+
+            - name: Get pnpm store directory
+              id: pnpm-cache
+              working-directory: "${{ runner.temp }}/generated"
+              run: |
+                  echo "STORE_PATH=$(pnpm store path)" >> "$GITHUB_OUTPUT"
+                  echo "LOCK_HASH=$(sha256sum pnpm-lock.yaml | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+
+            - name: Setup pnpm cache
+              uses: actions/cache@v4
+              with:
+                  path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+                  key: pnpm-${{ runner.os }}-${{ steps.pnpm-cache.outputs.LOCK_HASH }}
+
+            - name: Install dependencies
+              working-directory: "${{ runner.temp }}/generated"
+              run: pnpm install
+
+            - name: Cache Playwright browsers
+              if: matrix.browser_tests == 'true'
+              uses: actions/cache@v4
+              with:
+                  path: ~/.cache/ms-playwright
+                  key: playwright-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+            - name: Install Playwright browsers
+              if: matrix.browser_tests == 'true'
+              working-directory: "${{ runner.temp }}/generated"
+              run: pnpm exec playwright install --with-deps
+
+            - name: Run format
+              working-directory: "${{ runner.temp }}/generated"
+              run: pnpm run format
+
+            - name: Run lint
+              working-directory: "${{ runner.temp }}/generated"
+              run: pnpm run lint
+
+            - name: Generate Cloudflare types
+              working-directory: "${{ runner.temp }}/generated"
+              run: pnpm run gen:cf-types
+
+            - name: Run typecheck
+              working-directory: "${{ runner.temp }}/generated"
+              run: pnpm run check
+
+            - name: Run build
+              working-directory: "${{ runner.temp }}/generated"
+              run: pnpm run build
+
+            - name: Run tests
+              if: matrix.tests == 'true'
+              working-directory: "${{ runner.temp }}/generated"
+              run: pnpm run test
