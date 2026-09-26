@@ -1,52 +1,52 @@
 name: CI
 
 on:
-    push:
-        branches: [main, develop]
-    pull_request:
-        branches: [main, develop]
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
 
 jobs:
-    format:
-        name: Format
-        runs-on: ubuntu-latest
+  format:
+    name: Format
+    runs-on: ubuntu-latest
 
-        steps:
-            - uses: ./.github/actions/setup-project
-            - run: pnpm run format
+    steps:
+      - uses: ./.github/actions/setup-project
+      - run: pnpm run format
 
-    lint:
-        name: Lint
-        runs-on: ubuntu-latest
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
 
-        steps:
-            - uses: ./.github/actions/setup-project
-            - run: pnpm run lint
+    steps:
+      - uses: ./.github/actions/setup-project
+      - run: pnpm run lint
 
-    typecheck:
-        name: Typecheck
-        runs-on: ubuntu-latest
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
 
-        steps:
-            - uses: ./.github/actions/setup-project
-            - run: pnpm run gen:cf-types
-            - run: pnpm run check
+    steps:
+      - uses: ./.github/actions/setup-project
+      - run: pnpm run gen:cf-types
+      - run: pnpm run check
 {% if tests %}
-    test:
-        name: Test
-        runs-on: ubuntu-latest
+  test:
+    name: Test
+    runs-on: ubuntu-latest
 
-        steps:
-            - uses: ./.github/actions/setup-project
+    steps:
+      - uses: ./.github/actions/setup-project
 {% if browser_tests %}
-            - run: pnpm exec playwright install --with-deps
+      - run: pnpm exec playwright install --with-deps
 {% endif %}
-            - run: pnpm run test
+      - run: pnpm run test
 {% endif %}
-    build:
-        name: Build
-        runs-on: ubuntu-latest
+  build:
+    name: Build
+    runs-on: ubuntu-latest
 
-        steps:
-            - uses: ./.github/actions/setup-project
-            - run: pnpm run build
+    steps:
+      - uses: ./.github/actions/setup-project
+      - run: pnpm run build
