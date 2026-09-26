@@ -29,7 +29,7 @@ This is a [Copier](https://copier.readthedocs.io/) template repository. It gener
 - **Prettier**: 4-space indent, double quotes, trailing commas all. YAML uses 2-space tabs.
 - **ESLint**: `typescript-eslint` strict + `perfectionist/recommended-alphabetical`. Use `// @sort` comments to partition sorting.
 - **Svelte**: All `.svelte` files must use `<script lang="ts">` (enforced by `svelte/block-lang`).
-- **Wrangler**: `not_found_handling: "none"` (not `"404-page"`). Observability logs and traces are explicitly enabled.
+- **Wrangler**: `not_found_handling: "none"` (not `"404-page"`). Observability logs and traces are explicitly enabled. `build.command` is `"pnpm build"`, `previews` is an empty placeholder, and `upload_source_maps` is `true`.
 - **Worker tests** use `@cloudflare/vitest-pool-workers` with a `vitest.config.ts` (not `.mts`).
 - **Svelte tests** use plain Vitest with `tests/setup.ts` and `tests/dummy.test.ts`.
 - **`worker-configuration.d.ts`** is gitignored and auto-generated via `wrangler types`.
