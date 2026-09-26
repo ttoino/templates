@@ -1,12 +1,15 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": ["config:recommended"],
+    "dependencyDashboard": false,
     "schedule": ["* 0-3 1 * *"],
     "prConcurrentLimit": 1,
+    "separateMajorMinor": false,
     "packageRules": [
         {
             "groupName": "all dependencies",
-            "matchManagers": ["github-actions"]
+            "matchManagers": ["github-actions"],
+            "automerge": true
         }
     ]
 }

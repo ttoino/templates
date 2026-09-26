@@ -34,7 +34,7 @@ This is a [Copier](https://copier.readthedocs.io/) template repository. It gener
 - **Svelte tests** use plain Vitest with `tests/setup.ts` and `tests/dummy.test.ts`.
 - **`worker-configuration.d.ts`** is gitignored and auto-generated via `wrangler types`.
 - All generated projects are **GPL-3.0-or-later**.
-- Generated projects use **Renovate** for dependency automation.
+- Generated projects use **Renovate** for dependency automation. It opens separate monthly PRs for npm/Nix patch/minor updates (auto-merged), npm/Nix major updates (manual), GitHub Actions updates (auto-merged), and lock-file maintenance (auto-merged). Security updates still open immediately.
 
 ## Common edits
 
