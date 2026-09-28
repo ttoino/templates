@@ -1,9 +1,8 @@
 import { sveltekit } from "@sveltejs/kit/vite";
 {% if tailwind %}import tailwindcss from "@tailwindcss/vite";
 {% endif %}{% if browser_tests %}import { playwright } from "@vitest/browser-playwright";
-{% endif %}{% if tests %}import { defineConfig } from "vitest/config";
-{% else %}import { defineConfig } from "vite";
-{% endif %}
+{% endif %}import { defineConfig } from "{% if tests %}vitest/config{% else %}vite{% endif %}";
+
 export default defineConfig({
     plugins: [{% if tailwind %}tailwindcss(), {% endif %}sveltekit()],{% if tests %}
     test: {% if browser_tests %}{
@@ -44,10 +43,11 @@ export default defineConfig({
             },
         ],
         setupFiles: "tests/setup.ts",
-    },{% else %}{
+    }{% else %}{
         include: [
             "src/**/*.{test,spec}.{js,ts}",
             "tests/**/*.{test,spec}.{js,ts}",
         ],
-    },{% endif %}{% endif %}
+        setupFiles: "tests/setup.ts",
+    }{% endif %},{% endif %}
 });
