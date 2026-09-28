@@ -3,13 +3,98 @@
     "extends": ["config:recommended"],
     "dependencyDashboard": false,
     "schedule": ["* 0-3 1 * *"],
-    "prConcurrentLimit": 1,
-    "separateMajorMinor": false,
+    "prConcurrentLimit": 4,
+    "customManagers": [
+        {
+            "customType": "regex",
+            "description": "Bump npm/pnpm deps in package.json.jinja templates",
+            "managerFilePatterns": [
+                "**/worker/package.json.jinja",
+                "**/sveltekit/package.json.jinja",
+                "**/svelte-library/package.json.jinja"
+            ],
+            "matchStrings": [
+                "\"(?<depName>[^\"]+)\":\\s*\"(?<prefix>[\\^~]?)(?<currentValue>[^\"]+)\""
+            ],
+            "datasourceTemplate": "npm",
+            "versioningTemplate": "npm",
+            "autoReplaceStringTemplate": "\"{{{depName}}}\": \"{{{prefix}}}{{{newValue}}}\""
+        },
+        {
+            "customType": "regex",
+            "description": "Bump pnpm packageManager version",
+            "managerFilePatterns": [
+                "**/worker/package.json.jinja",
+                "**/sveltekit/package.json.jinja",
+                "**/svelte-library/package.json.jinja"
+            ],
+            "matchStrings": [
+                "\"packageManager\":\\s*\"pnpm@(?<currentValue>[^+\"]+)"
+            ],
+            "depNameTemplate": "pnpm",
+            "datasourceTemplate": "npm",
+            "versioningTemplate": "npm"
+        },
+        {
+            "customType": "regex",
+            "description": "Bump Python dev deps in pyproject.toml.jinja",
+            "managerFilePatterns": ["**/python/pyproject.toml.jinja"],
+            "matchStrings": [
+                "\"(?<depName>[^\"]+)==(?<currentValue>[^\"]+)\""
+            ],
+            "datasourceTemplate": "pypi",
+            "versioningTemplate": "pep440",
+            "autoReplaceStringTemplate": "\"{{{depName}}}=={{{newValue}}}\""
+        },
+        {
+            "customType": "regex",
+            "description": "Bump Python deps in tox legacy_tox_ini",
+            "managerFilePatterns": ["**/python/pyproject.toml.jinja"],
+            "matchStrings": [
+                "deps\\s*=\\s*(?<depName>[a-z0-9_-]+)==(?<currentValue>[^ \\n]+)"
+            ],
+            "datasourceTemplate": "pypi",
+            "versioningTemplate": "pep440",
+            "autoReplaceStringTemplate": "deps = {{{depName}}}=={{{newValue}}}"
+        },
+        {
+            "customType": "regex",
+            "description": "Bump GitHub Actions versions in workflow templates",
+            "managerFilePatterns": ["**/.github/workflows/*.yml.jinja"],
+            "matchStrings": [
+                "uses:\\s+(?<depName>[\\w\\-/.]+)@(?<currentValue>v?\\d+(?:\\.\\d+)*)"
+            ],
+            "datasourceTemplate": "github-tags",
+            "versioningTemplate": "semver",
+            "extractVersionTemplate": "^v(?<version>.*)$"
+        },
+        {
+            "customType": "regex",
+            "description": "Bump Playwright Nix flake input tag",
+            "managerFilePatterns": ["**/sveltekit/flake.nix.jinja"],
+            "matchStrings": [
+                "github:pietdevries94/playwright-web-flake/(?<currentValue>[\\d.]+)"
+            ],
+            "depNameTemplate": "pietdevries94/playwright-web-flake",
+            "datasourceTemplate": "github-tags",
+            "versioningTemplate": "semver"
+        }
+    ],
     "packageRules": [
         {
-            "groupName": "all dependencies",
-            "matchManagers": ["github-actions"],
+            "groupName": "template dependencies",
+            "matchManagers": ["custom.regex"],
+            "matchUpdateTypes": ["patch", "minor"],
             "automerge": true
+        },
+        {
+            "groupName": "template dependencies",
+            "matchManagers": ["custom.regex"],
+            "matchUpdateTypes": ["major"]
+        },
+        {
+            "matchPackageNames": ["pnpm"],
+            "minimumReleaseAge": "1 day"
         }
     ]
 }

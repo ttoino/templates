@@ -13,18 +13,18 @@ dependencies = []
 
 [project.optional-dependencies]
 dev = [
-    "pyright",
-    "pytest",
-    "ruff",
-    "tox",
+    "pyright==1.1.414",
+    "pytest==9.1.1",
+    "ruff==0.16.9",
+    "tox==4.64.4",
 ]
 
 [dependency-groups]
 dev = [
-    "pyright",
-    "pytest",
-    "ruff",
-    "tox",
+    "pyright==1.1.414",
+    "pytest==9.1.1",
+    "ruff==0.16.9",
+    "tox==4.64.4",
 ]
 
 [build-system]
@@ -62,14 +62,14 @@ envlist = py313, lint, type
 isolated_build = true
 
 [testenv]
-deps = pytest
+deps = pytest==9.1.1
 commands = pytest {posargs}
 
 [testenv:lint]
-deps = ruff
+deps = ruff==0.16.9
 commands = ruff check .
 
 [testenv:type]
-deps = pyright
+deps = pyright==1.1.414
 commands = pyright
 """
