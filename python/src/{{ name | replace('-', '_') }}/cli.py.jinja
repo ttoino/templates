@@ -1,0 +1,20 @@
+import argparse
+import sys
+
+from {{ name | replace('-', '_') }} import __version__
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(prog="{{ name }}")
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {__version__}",
+    )
+    parser.parse_args(argv)
+    print("Hello from {{ name }}!")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

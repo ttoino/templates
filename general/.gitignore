@@ -1,0 +1,9 @@
+.direnv
+result
+result-*
+.env
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db

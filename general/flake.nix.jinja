@@ -1,0 +1,27 @@
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  };
+
+  outputs =
+    { nixpkgs, ... }:
+    let
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+    in
+    {
+      devShells.${system}.default = pkgs.mkShell {
+        packages = with pkgs; [
+          git
+        ];
+      };
+
+      checks.${system}.default = pkgs.runCommand "check-readme-exists" { } ''
+        if [ ! -f ${./README.md} ]; then
+          echo "README.md is missing"
+          exit 1
+        fi
+        mkdir $out
+      '';
+    };
+}

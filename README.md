@@ -1,6 +1,6 @@
 # Project Templates
 
-Copier-based project scaffolding for personal TypeScript/Node.js projects.
+Copier-based project scaffolding for personal projects.
 
 ## Prerequisites
 
@@ -16,7 +16,7 @@ copier copy gh:ttoino/templates ~/projects/my-new-app
 # Create with pre-answered questions
 copier copy gh:ttoino/templates ~/projects/my-new-app \
   -d 'name=my-new-app' \
-  -d 'type=sveltekit' \
+  -d 'project_type=sveltekit' \
   -d 'tailwind=true'
 
 # Update an existing project when templates change
@@ -27,34 +27,43 @@ copier update ~/projects/my-existing-app
 
 | Type | Description |
 |------|-------------|
-| **SvelteKit app** | Full SvelteKit app deployed to Cloudflare Workers |
-| **Cloudflare Worker** | Pure Hono-based Worker (no SvelteKit) |
-| **Svelte library** | Svelte component library with demo site on Cloudflare Workers |
+| **general** | Minimal general-purpose project with Nix + Renovate |
+| **python** | Python package with uv, ruff, pyright, pytest, and optional CLI |
+| **worker** | Pure Hono-based Cloudflare Worker |
+| **sveltekit** | Full SvelteKit app deployed to Cloudflare Workers/Pages |
+| **svelte-library** | Svelte component library |
 
 ## Features
 
-- **Svelte 5** + SvelteKit 2
-- **TypeScript** strict mode
-- **Tailwind CSS v4** (optional)
-- **svelte-m3c** Material Design 3 (optional)
+- **TypeScript** strict mode (Node, Worker, Svelte)
+- **Svelte 5** + SvelteKit 2 (Svelte templates)
+- **Tailwind CSS v4** (optional, Svelte templates)
+- **svelte-m3c** Material Design 3 (optional, Svelte templates)
 - **ESLint** + **Prettier** with perfectionist plugin
 - **Vitest** unit and/or browser tests (optional)
-- **Playwright** (optional)
-- **Cloudflare Workers** deployment via Wrangler
+- **Playwright** (optional, Svelte templates)
+- **Cloudflare Workers** deployment via Wrangler (Worker, SvelteKit)
+- **Python 3.13** + **uv** + **tox** (Python template)
 - **Nix flake** for reproducible dev environment
-- **Renovate** dependency automation (single monthly PR, auto-merge devDependencies, Nix lockfile support)
+- **Renovate** dependency automation
 - **GitHub Actions** CI (and CD for libraries)
 
 ## Standardized Conventions
 
 All projects generated from this template follow consistent conventions:
 
-- **pnpm 11.2.2** as package manager
+- **pnpm 11.2.2** as package manager (Node/TypeScript templates)
 - **4-space tabs**, **double quotes**, **trailing commas all**
 - **Alphabetical imports/exports** via ESLint perfectionist
 - **`<script lang="ts">`** enforced in all Svelte files
-- **NodeNext** module resolution
+- **NodeNext** module resolution (Svelte templates)
 - **80-character** print width
+
+## Repository Structure
+
+This repo intentionally contains multiple self-contained Copier templates. Each
+template lives in its own top-level directory and duplicates shared boilerplate
+so that generated projects remain independent and easy to evolve separately.
 
 ## License
 

@@ -1,125 +1,169 @@
 name: CI
 
 on:
-    push:
-        branches: [main, develop]
-    pull_request:
-        branches: [main, develop]
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
 
 jobs:
-    generate-and-check:
-        name: Generate and check (${{ matrix.name }})
-        runs-on: ubuntu-latest
-        timeout-minutes: 15
+  generate-and-check:
+    name: Generate and check (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
 
-        strategy:
-            fail-fast: false
-            matrix:
-                include:
-                    - name: worker
-                      type: worker
-                      tests: "true"
-                    - name: sveltekit
-                      type: sveltekit
-                      tailwind: "true"
-                      svelte_m3c: "false"
-                      tests: "true"
-                      browser_tests: "true"
-                    - name: library
-                      type: library
-                      tailwind: "false"
-                      tests: "true"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: general
+            project_type: general
+          - name: python
+            project_type: python
+            cli: "true"
+          - name: worker
+            project_type: worker
+            tests: "true"
+          - name: sveltekit
+            project_type: sveltekit
+            tailwind: "true"
+            svelte_m3c: "false"
+            tests: "true"
+            browser_tests: "true"
+          - name: svelte-library
+            project_type: svelte-library
+            tailwind: "false"
+            tests: "true"
 
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v6
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-            - name: Set up Python
-              uses: actions/setup-python@v5
-              with:
-                  python-version: "3.13"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
 
-            - name: Install Copier
-              run: pip install copier
+      - name: Install Copier
+        run: pip install copier
 
-            - name: Generate project
-              run: |
-                  DATA_ARGS=(
-                    "--data" "name=ci-test"
-                    "--data" "description=CI test project"
-                    "--data" "type=${{ matrix.type }}"
-                    "--data" "tests=${{ matrix.tests }}"
-                  )
-                  [[ -n "${{ matrix.tailwind }}" ]] && DATA_ARGS+=("--data" "tailwind=${{ matrix.tailwind }}")
-                  [[ -n "${{ matrix.svelte_m3c }}" ]] && DATA_ARGS+=("--data" "svelte_m3c=${{ matrix.svelte_m3c }}")
-                  [[ -n "${{ matrix.browser_tests }}" ]] && DATA_ARGS+=("--data" "browser_tests=${{ matrix.browser_tests }}")
-                  copier copy --trust --defaults "${DATA_ARGS[@]}" . "${{ runner.temp }}/generated"
+      - name: Generate project
+        run: |
+          DATA_ARGS=(
+            "--data" "name=ci-test"
+            "--data" "description=CI test project"
+            "--data" "project_type=${{ matrix.project_type }}"
+          )
+          [[ -n "${{ matrix.cli }}" ]] && DATA_ARGS+=("--data" "cli=${{ matrix.cli }}")
+          [[ -n "${{ matrix.tailwind }}" ]] && DATA_ARGS+=("--data" "tailwind=${{ matrix.tailwind }}")
+          [[ -n "${{ matrix.svelte_m3c }}" ]] && DATA_ARGS+=("--data" "svelte_m3c=${{ matrix.svelte_m3c }}")
+          [[ -n "${{ matrix.tests }}" ]] && DATA_ARGS+=("--data" "tests=${{ matrix.tests }}")
+          [[ -n "${{ matrix.browser_tests }}" ]] && DATA_ARGS+=("--data" "browser_tests=${{ matrix.browser_tests }}")
+          copier copy --trust --defaults "${DATA_ARGS[@]}" . "${{ runner.temp }}/generated"
 
-            - name: Get pnpm version
-              id: pnpm-version
-              working-directory: "${{ runner.temp }}/generated"
-              run: |
-                  version=$(python3 -c "import json; pm=json.load(open('package.json')).get('packageManager',''); print(pm.replace('pnpm@','').split('+')[0])")
-                  echo "version=$version" >> "$GITHUB_OUTPUT"
+      # General template
+      - name: Install Nix
+        if: matrix.project_type == 'general'
+        uses: cachix/install-nix-action@v31
 
-            - name: Install Node
-              uses: actions/setup-node@v6
-              with:
-                  node-version: 22
+      - name: Check general flake
+        if: matrix.project_type == 'general'
+        working-directory: "${{ runner.temp }}/generated"
+        run: nix flake check
 
-            - name: Install pnpm
-              run: npm install -g pnpm@${{ steps.pnpm-version.outputs.version }}
+      # Python template
+      - name: Set up uv
+        if: matrix.project_type == 'python'
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.13"
 
-            - name: Get pnpm store directory
-              id: pnpm-cache
-              working-directory: "${{ runner.temp }}/generated"
-              run: |
-                  echo "STORE_PATH=$(pnpm store path)" >> "$GITHUB_OUTPUT"
-                  echo "LOCK_HASH=$(sha256sum pnpm-lock.yaml | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
+      - name: Check Python project
+        if: matrix.project_type == 'python'
+        working-directory: "${{ runner.temp }}/generated"
+        run: |
+          uv sync
+          uv run ruff check .
+          uv run pyright
+          uv run pytest
 
-            - name: Setup pnpm cache
-              uses: actions/cache@v4
-              with:
-                  path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-                  key: pnpm-${{ runner.os }}-${{ steps.pnpm-cache.outputs.LOCK_HASH }}
+      # Node/TypeScript templates
+      - name: Get pnpm version
+        if: matrix.project_type != 'general' && matrix.project_type != 'python'
+        id: pnpm-version
+        working-directory: "${{ runner.temp }}/generated"
+        run: |
+          version=$(python3 -c "import json; pm=json.load(open('package.json')).get('packageManager',''); print(pm.replace('pnpm@','').split('+')[0])")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
 
-            - name: Install dependencies
-              working-directory: "${{ runner.temp }}/generated"
-              run: pnpm install
+      - name: Install Node
+        if: matrix.project_type != 'general' && matrix.project_type != 'python'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
 
-            - name: Cache Playwright browsers
-              if: matrix.browser_tests == 'true'
-              uses: actions/cache@v4
-              with:
-                  path: ~/.cache/ms-playwright
-                  key: playwright-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+      - name: Install pnpm
+        if: matrix.project_type != 'general' && matrix.project_type != 'python'
+        run: npm install -g pnpm@${{ steps.pnpm-version.outputs.version }}
 
-            - name: Install Playwright browsers
-              if: matrix.browser_tests == 'true'
-              working-directory: "${{ runner.temp }}/generated"
-              run: pnpm exec playwright install --with-deps
+      - name: Get pnpm store directory
+        if: matrix.project_type != 'general' && matrix.project_type != 'python'
+        id: pnpm-cache
+        working-directory: "${{ runner.temp }}/generated"
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> "$GITHUB_OUTPUT"
+          echo "LOCK_HASH=$(sha256sum pnpm-lock.yaml | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
 
-            - name: Run format
-              working-directory: "${{ runner.temp }}/generated"
-              run: pnpm run format
+      - name: Setup pnpm cache
+        if: matrix.project_type != 'general' && matrix.project_type != 'python'
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: pnpm-${{ runner.os }}-${{ steps.pnpm-cache.outputs.LOCK_HASH }}
 
-            - name: Run lint
-              working-directory: "${{ runner.temp }}/generated"
-              run: pnpm run lint
+      - name: Install dependencies
+        if: matrix.project_type != 'general' && matrix.project_type != 'python'
+        working-directory: "${{ runner.temp }}/generated"
+        run: pnpm install
 
-            - name: Generate Cloudflare types
-              working-directory: "${{ runner.temp }}/generated"
-              run: pnpm run gen:cf-types
+      - name: Cache Playwright browsers
+        if: matrix.browser_tests == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
 
-            - name: Run typecheck
-              working-directory: "${{ runner.temp }}/generated"
-              run: pnpm run check
+      - name: Install Playwright browsers
+        if: matrix.browser_tests == 'true'
+        working-directory: "${{ runner.temp }}/generated"
+        run: pnpm exec playwright install --with-deps
 
-            - name: Run build
-              working-directory: "${{ runner.temp }}/generated"
-              run: pnpm run build
+      - name: Run format
+        if: matrix.project_type != 'general' && matrix.project_type != 'python'
+        working-directory: "${{ runner.temp }}/generated"
+        run: pnpm run format
 
-            - name: Run tests
-              if: matrix.tests == 'true'
-              working-directory: "${{ runner.temp }}/generated"
-              run: pnpm run test
+      - name: Run lint
+        if: matrix.project_type != 'general' && matrix.project_type != 'python'
+        working-directory: "${{ runner.temp }}/generated"
+        run: pnpm run lint
+
+      - name: Generate Cloudflare types
+        if: matrix.project_type == 'worker' || matrix.project_type == 'sveltekit'
+        working-directory: "${{ runner.temp }}/generated"
+        run: pnpm run gen:cf-types
+
+      - name: Run typecheck
+        if: matrix.project_type != 'general' && matrix.project_type != 'python'
+        working-directory: "${{ runner.temp }}/generated"
+        run: pnpm run check
+
+      - name: Run build
+        if: matrix.project_type != 'general' && matrix.project_type != 'python'
+        working-directory: "${{ runner.temp }}/generated"
+        run: pnpm run build
+
+      - name: Run tests
+        if: matrix.tests == 'true'
+        working-directory: "${{ runner.temp }}/generated"
+        run: pnpm run test

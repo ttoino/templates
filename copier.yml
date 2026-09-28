@@ -1,10 +1,10 @@
 _min_copier_version: "9.0.0"
 
-_subdirectory: template
+_subdirectory: "{{ project_type }}"
 
 name:
     type: str
-    help: Project name (kebab-case, used in package.json and wrangler.jsonc)
+    help: Project name (kebab-case, used in package names and configs)
     default: "{{ _copier_conf.dst_path.name }}"
     validator: >-
         {% if not (name | regex_search('^[a-z][a-z0-9\-]+$')) %}
@@ -16,19 +16,21 @@ description:
     help: Short description of the project
     default: "A project built with this template"
 
-type:
+project_type:
     type: str
     help: What type of project is this?
     choices:
+        General-purpose: general
+        Python package: python
         Cloudflare Worker (Hono): worker
         SvelteKit app: sveltekit
-        Svelte(Kit) library: library
+        Svelte library: svelte-library
 
 tailwind:
     type: bool
     help: Include Tailwind CSS?
-    default: "{{ type != 'worker' }}"
-    when: "{{ type != 'worker' }}"
+    default: "{{ project_type in ['sveltekit', 'svelte-library'] }}"
+    when: "{{ project_type in ['sveltekit', 'svelte-library'] }}"
 
 svelte_m3c:
     type: bool
@@ -36,16 +38,23 @@ svelte_m3c:
     default: false
     when: "{{ tailwind }}"
 
+cli:
+    type: bool
+    help: Include a CLI entry point?
+    default: false
+    when: "{{ project_type == 'python' }}"
+
 tests:
     type: bool
-    help: Include Vitest?
+    help: Include tests?
     default: true
+    when: "{{ project_type in ['worker', 'sveltekit', 'svelte-library'] }}"
 
 browser_tests:
     type: bool
-    help: Include Playwright?
+    help: Include Playwright browser tests?
     default: false
-    when: "{{ type != 'worker' }}"
+    when: "{{ tests and project_type in ['sveltekit', 'svelte-library'] }}"
 
 _message_after_copy: |
     Project "{{ name }}" created successfully!
@@ -53,5 +62,5 @@ _message_after_copy: |
     Next steps:
     1. cd {{ _copier_conf.dst_path }}
     2. direnv allow  # if using direnv, or: nix develop
-    3. pnpm install
-    4. pnpm dev
+    3. {% if project_type == 'python' %}uv sync{% else %}pnpm install{% endif %}
+    4. {% if project_type == 'python' %}uv run pytest{% else %}pnpm dev{% endif %}

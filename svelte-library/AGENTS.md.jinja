@@ -1,0 +1,80 @@
+# AGENTS.md
+
+## Project Overview
+
+{% if description %}{{ description }}
+
+{% endif %}**Type**: Svelte library{% if tailwind %} + Tailwind CSS v4{% endif %}{% if svelte_m3c %} + svelte-m3c{% endif %}
+**Package Manager**: pnpm 11.2.2
+
+## Development Environment
+
+A Nix flake is present for local dev. If using direnv, it loads automatically:
+
+```bash
+direnv allow
+```
+
+Otherwise:
+
+```bash
+nix develop
+```
+
+## Commands
+
+- `pnpm dev`: Start Vite dev server
+- `pnpm build`: Package the library with `@sveltejs/package`
+- `pnpm check`: Typecheck (`svelte-check`)
+- `pnpm check:watch`: Typecheck in watch mode
+- `pnpm lint`: ESLint
+- `pnpm lint:fix`: ESLint with auto-fix
+- `pnpm format`: Prettier check
+- `pnpm format:fix`: Prettier write
+{% if tests %}- `pnpm test`: Run tests{% if browser_tests %} (including browser tests){% endif %}
+{% endif %}
+## CI Pipeline
+
+GitHub Actions runs independent jobs on PRs/pushes to `main`/`develop`:
+
+1. `format` — Prettier formatting
+2. `lint` — ESLint with TypeScript, Svelte, and Perfectionist
+3. `typecheck` — `svelte-check`
+{% if tests %}4. `test` — Vitest{% if browser_tests %} (including browser tests){% endif %}
+5. `build` — Package the library
+{% else %}4. `build` — Package the library
+{% endif %}
+All jobs use `pnpm install --frozen-lockfile`.
+
+## Architecture Notes
+
+- **Entry**: `src/lib/index.ts` re-exports public components/utilities.
+- **Output**: `dist/` produced by `svelte-package`.
+- **Exports**: configured in `package.json` (`exports`, `types`, `svelte`).
+
+## Code Style
+
+**Prettier**: 4-space indentation, double quotes, trailing commas. YAML uses 2-space tabs.
+
+**ESLint**: TypeScript strict mode, Svelte all rules enabled, plus Perfectionist for alphabetical sorting of imports/exports/objects.
+
+**Svelte**: All `.svelte` files must use `<script lang="ts">` (enforced by `svelte/block-lang`).
+
+**Imports**: Alphabetical order within groups. Use `// @sort` comments to partition sorting.
+
+## Important Files
+
+- `svelte.config.js`: Svelte compiler configuration
+- `vite.config.ts`: Vite plugins and test config
+- `tsconfig.json`: TypeScript compiler options
+- `eslint.config.js`: ESLint rules and plugins
+- `.prettierrc`: Prettier formatting config
+- `flake.nix`: Nix development shell
+
+## Dependency Automation
+
+This project uses **Renovate** for dependency updates. Renovate opens a single monthly PR grouping all npm, GitHub Actions, and Nix input updates. Patch and minor devDependencies are auto-merged.
+
+## Deployment
+
+Published as an npm package. The GitHub Actions `cd.yml` workflow handles publishing on version tags.

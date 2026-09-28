@@ -1,0 +1,60 @@
+# AGENTS.md
+
+## Project Overview
+
+{% if description %}{{ description }}
+
+{% endif %}**Type**: Python package{% if cli %} + CLI{% endif %}
+**Python**: >=3.13
+**Package Manager**: uv
+**Test Runner**: pytest / tox
+
+## Development Environment
+
+A Nix flake is present for local dev. If using direnv, it loads automatically:
+
+```bash
+direnv allow
+```
+
+Otherwise:
+
+```bash
+nix develop
+```
+
+The flake provides `uv`, `python3.13`, and `tox`.
+
+## Commands
+
+- `uv sync` — install dependencies
+- `uv run pytest` — run tests
+- `uv run ruff check .` — lint
+- `uv run ruff format .` — format
+- `uv run pyright` — typecheck
+- `tox` — run the full test matrix (py313, lint, type)
+{% if cli %}- `uv run {{ name }}` — run the CLI
+{% endif %}
+## CI Pipeline
+
+GitHub Actions runs on PRs/pushes to `main`/`develop`:
+
+1. `lint` — `ruff check .`
+2. `typecheck` — `pyright`
+3. `test` — `pytest`
+
+All jobs use `uv` and `python3.13`.
+
+## Code Style
+
+**Ruff**: 88-character line length, target Python 3.13, select `E`, `F`, `I`, `N`, `W`, `UP`.
+
+**Pyright**: strict mode on `src/`, Python 3.13.
+
+## Dependency Automation
+
+This project uses **Renovate** for dependency updates. Renovate opens a single monthly PR grouping all pip, GitHub Actions, and Nix input updates. Patch and minor devDependencies are auto-merged.
+
+## Deployment
+
+Published as a Python package to PyPI. The GitHub Actions `cd.yml` workflow handles publishing on version tags.

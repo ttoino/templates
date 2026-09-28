@@ -1,0 +1,28 @@
+name: CD
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: ./.github/actions/setup-project
+
+      - name: Build package
+        run: pnpm run build
+
+      - name: Configure npm auth
+        run: pnpm config set //registry.npmjs.org/:_authToken ${{ "{{ secrets.NPM_TOKEN }}" }}
+
+      - name: Publish
+        run: pnpm publish --access public --no-git-checks
+        env:
+          NPM_CONFIG_PROVENANCE: "true"

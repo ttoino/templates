@@ -1,0 +1,38 @@
+# {{ name }}
+
+{{ description }}
+
+## Development
+
+This project uses `uv` for dependency management and a Nix flake for the development environment.
+
+If you use direnv, run:
+
+```bash
+direnv allow
+```
+
+Otherwise enter the shell with:
+
+```bash
+nix develop
+```
+
+Install dependencies:
+
+```bash
+uv sync
+```
+
+## Commands
+
+- `uv run pytest` — run tests
+- `uv run ruff check .` — lint
+- `uv run ruff format .` — format
+- `uv run pyright` — typecheck
+- `tox` — run the full test matrix
+{% if cli %}- `uv run {{ name }}` — run the CLI
+{% endif %}
+## License
+
+GPL-3.0-or-later
