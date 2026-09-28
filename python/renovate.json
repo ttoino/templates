@@ -14,24 +14,20 @@
     },
     "packageRules": [
         {
-            "groupName": "npm and nix dependencies",
-            "matchManagers": ["npm", "nix"],
+            "groupName": "python and nix dependencies",
+            "matchManagers": ["pep621", "nix"],
             "matchUpdateTypes": ["patch", "minor"],
             "automerge": true
         },
         {
-            "groupName": "npm and nix dependencies",
-            "matchManagers": ["npm", "nix"],
+            "groupName": "python and nix dependencies",
+            "matchManagers": ["pep621", "nix"],
             "matchUpdateTypes": ["major"]
         },
         {
             "groupName": "github actions",
             "matchManagers": ["github-actions"],
             "automerge": true
-        },
-        {
-            "matchPackageNames": ["pnpm"],
-            "minimumReleaseAge": "1 day"
         }
     ]
 }

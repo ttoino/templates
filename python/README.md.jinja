@@ -24,13 +24,22 @@ Install dependencies:
 uv sync
 ```
 
+This installs the default dev tools (ruff, pyright, pytest). To also install
+tox, run:
+
+```bash
+uv sync --extra dev
+```
+
+or use the Nix flake, which provides tox directly.
+
 ## Commands
 
 - `uv run pytest` — run tests
 - `uv run ruff check .` — lint
 - `uv run ruff format .` — format
 - `uv run pyright` — typecheck
-- `tox` — run the full test matrix
+- `tox` — run the full test matrix (requires tox, see above)
 {% if cli %}- `uv run {{ name }}` — run the CLI
 {% endif %}
 ## License

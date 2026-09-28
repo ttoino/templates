@@ -4,6 +4,7 @@
     "dependencyDashboard": false,
     "schedule": ["* 0-3 1 * *"],
     "prConcurrentLimit": 4,
+    "ignoreDeps": ["version", "type", "packageManager", "requires-python"],
     "customManagers": [
         {
             "customType": "regex",
