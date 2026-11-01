@@ -11,8 +11,17 @@
     },
     "packageRules": [
         {
-            "groupName": "github actions",
-            "matchManagers": ["github-actions"],
+            "groupName": "minor dependencies",
+            "matchUpdateTypes": ["patch", "minor"],
+            "automerge": true
+        },
+        {
+            "groupName": "major dependencies",
+            "matchUpdateTypes": ["major"]
+        },
+        {
+            "groupName": "lockfile maintenance",
+            "matchUpdateTypes": ["lockFileMaintenance"],
             "automerge": true
         }
     ]

@@ -83,14 +83,25 @@
     ],
     "packageRules": [
         {
-            "groupName": "template dependencies",
+            "groupName": "minor template dependencies",
             "matchManagers": ["custom.regex"],
             "matchUpdateTypes": ["patch", "minor"],
             "automerge": true
         },
         {
-            "groupName": "template dependencies",
+            "groupName": "major template dependencies",
             "matchManagers": ["custom.regex"],
+            "matchUpdateTypes": ["major"]
+        },
+        {
+            "groupName": "minor dependencies",
+            "matchManagers": ["!custom.regex"],
+            "matchUpdateTypes": ["patch", "minor"],
+            "automerge": true
+        },
+        {
+            "groupName": "major dependencies",
+            "matchManagers": ["!custom.regex"],
             "matchUpdateTypes": ["major"]
         },
         {

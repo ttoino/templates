@@ -14,19 +14,17 @@
     },
     "packageRules": [
         {
-            "groupName": "python and nix dependencies",
-            "matchManagers": ["pep621", "nix"],
+            "groupName": "minor dependencies",
             "matchUpdateTypes": ["patch", "minor"],
             "automerge": true
         },
         {
-            "groupName": "python and nix dependencies",
-            "matchManagers": ["pep621", "nix"],
+            "groupName": "major dependencies",
             "matchUpdateTypes": ["major"]
         },
         {
-            "groupName": "github actions",
-            "matchManagers": ["github-actions"],
+            "groupName": "lockfile maintenance",
+            "matchUpdateTypes": ["lockFileMaintenance"],
             "automerge": true
         }
     ]
