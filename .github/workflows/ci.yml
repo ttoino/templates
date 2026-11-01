@@ -116,7 +116,7 @@ jobs:
 
       - name: Setup pnpm cache
         if: matrix.project_type != 'general' && matrix.project_type != 'python'
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
           key: pnpm-${{ runner.os }}-${{ steps.pnpm-cache.outputs.LOCK_HASH }}
@@ -128,7 +128,7 @@ jobs:
 
       - name: Cache Playwright browsers
         if: matrix.browser_tests == 'true'
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
