@@ -100,7 +100,7 @@ jobs:
         if: matrix.project_type != 'general' && matrix.project_type != 'python'
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 26
 
       - name: Install pnpm
         if: matrix.project_type != 'general' && matrix.project_type != 'python'
