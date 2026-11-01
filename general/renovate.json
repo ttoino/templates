@@ -2,6 +2,9 @@
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": ["config:recommended"],
     "dependencyDashboard": false,
+    "nix": {
+        "enabled": true
+    },
     "schedule": ["* 0-3 1 * *"],
     "prConcurrentLimit": 4,
     "lockFileMaintenance": {
