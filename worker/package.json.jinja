@@ -16,22 +16,22 @@
         "test": "vitest"{% endif %}
     },
     "dependencies": {
-        "hono": "^4.12.0"
+        "hono": "4.13.16"
     },
     "devDependencies": {
-{% if tests %}        "@cloudflare/vitest-pool-workers": "^0.16.9",
-{% endif %}        "@eslint/compat": "^2.1.0",
+{% if tests %}        "@cloudflare/vitest-pool-workers": "0.23.0",
+{% endif %}        "@eslint/compat": "2.1.1",
         "@eslint/js": "^10.0.1",
-        "@types/node": "^22.0.0",
-        "eslint": "^10.4.0",
+        "@types/node": "22.20.5",
+        "eslint": "10.14.0",
         "eslint-config-prettier": "^10.1.8",
-        "eslint-plugin-perfectionist": "^5.9.0",
-        "globals": "^17.6.0",
-        "prettier": "^3.8.3",
+        "eslint-plugin-perfectionist": "5.13.0",
+        "globals": "17.14.0",
+        "prettier": "3.9.10",
         "typescript": "^6.0.3",
-        "typescript-eslint": "^8.59.4",
-{% if tests %}        "vitest": "^4.1.7",
-{% endif %}        "wrangler": "^4.94.0"
+        "typescript-eslint": "8.72.1",
+{% if tests %}        "vitest": "4.1.12",
+{% endif %}        "wrangler": "4.156.0"
     },
-    "packageManager": "pnpm@11.2.2"
+    "packageManager": "pnpm@11.28.10"
 }
