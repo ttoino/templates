@@ -98,7 +98,7 @@ jobs:
 
       - name: Install Node
         if: matrix.project_type != 'general' && matrix.project_type != 'python'
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
 
