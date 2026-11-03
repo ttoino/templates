@@ -22,7 +22,7 @@ project_type:
     choices:
         General-purpose: general
         Python package: python
-        Cloudflare Worker (Hono): worker
+        Cloudflare Worker (Hono): hono-worker
         SvelteKit app: sveltekit
         Svelte library: svelte-library
 
@@ -48,7 +48,7 @@ tests:
     type: bool
     help: Include tests?
     default: true
-    when: "{{ project_type in ['worker', 'sveltekit', 'svelte-library'] }}"
+    when: "{{ project_type in ['hono-worker', 'sveltekit', 'svelte-library'] }}"
 
 browser_tests:
     type: bool
