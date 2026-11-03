@@ -21,9 +21,11 @@ jobs:
           - name: python
             project_type: python
             cli: "true"
-          - name: worker
-            project_type: worker
+          - name: hono-worker
+            project_type: hono-worker
             tests: "true"
+          - name: static-worker
+            project_type: static-worker
           - name: sveltekit
             project_type: sveltekit
             tailwind: "true"
@@ -144,22 +146,22 @@ jobs:
         run: pnpm run format
 
       - name: Run lint
-        if: matrix.project_type != 'general' && matrix.project_type != 'python'
+        if: matrix.project_type != 'general' && matrix.project_type != 'python' && matrix.project_type != 'static-worker'
         working-directory: "${{ runner.temp }}/generated"
         run: pnpm run lint
 
       - name: Generate Cloudflare types
-        if: matrix.project_type == 'worker' || matrix.project_type == 'sveltekit'
+        if: matrix.project_type == 'hono-worker' || matrix.project_type == 'sveltekit'
         working-directory: "${{ runner.temp }}/generated"
         run: pnpm run gen:cf-types
 
       - name: Run typecheck
-        if: matrix.project_type != 'general' && matrix.project_type != 'python'
+        if: matrix.project_type != 'general' && matrix.project_type != 'python' && matrix.project_type != 'static-worker'
         working-directory: "${{ runner.temp }}/generated"
         run: pnpm run check
 
       - name: Run build
-        if: matrix.project_type != 'general' && matrix.project_type != 'python'
+        if: matrix.project_type != 'general' && matrix.project_type != 'python' && matrix.project_type != 'static-worker'
         working-directory: "${{ runner.temp }}/generated"
         run: pnpm run build
 

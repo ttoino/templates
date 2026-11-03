@@ -2,7 +2,7 @@
 
 This is a [Copier](https://copier.readthedocs.io/) template repository that
 generates project scaffolding for several project types:
-`general`, `python`, `worker`, `sveltekit`, and `svelte-library`.
+`general`, `python`, `hono-worker`, `static-worker`, `sveltekit`, and `svelte-library`.
 
 **This repo itself is not a runnable project** — there is no root `package.json`
 and no build step here.
@@ -28,17 +28,17 @@ and no build step here.
 |----------|------|---------|
 | `name` | str | Project name (kebab-case). Default: destination directory name. |
 | `description` | str | Project description. |
-| `project_type` | str | `general`, `python`, `worker`, `sveltekit`, or `svelte-library`. |
+| `project_type` | str | `general`, `python`, `hono-worker`, `static-worker`, `sveltekit`, or `svelte-library`. |
 | `tailwind` | bool | Only for Svelte templates. |
 | `svelte_m3c` | bool | Only when `tailwind` is true. |
 | `cli` | bool | Only for `python`. |
-| `tests` | bool | Only for `worker`, `sveltekit`, `svelte-library`. |
+| `tests` | bool | Only for `hono-worker`, `sveltekit`, `svelte-library`. |
 | `browser_tests` | bool | Only when `tests` is true for Svelte templates. |
 
 ## Important conventions
 
 - **pnpm 11.2.2** in generated Node/TypeScript projects (`packageManager`).
-- **NodeNext** module resolution for Svelte projects; **bundler** for workers.
+- **NodeNext** module resolution for Svelte projects; **bundler** for `hono-worker`.
 - **Prettier**: 4-space indent, double quotes, trailing commas all. YAML 2-space.
 - **ESLint**: `typescript-eslint` strict + `perfectionist/recommended-alphabetical`.
 - **Svelte**: All `.svelte` files must use `<script lang="ts">`.
@@ -48,7 +48,7 @@ and no build step here.
 - **CI/CD**: Node templates use the shared `.github/actions/setup-project`
   composite action. Python and general templates use their own lightweight
   workflows.
-- **Worker tests** use `@cloudflare/vitest-pool-workers` with `vitest.config.ts`.
+- **`hono-worker` tests** use `@cloudflare/vitest-pool-workers` with `vitest.config.ts`.
 - **Svelte tests** use plain Vitest with `tests/setup.ts` and `tests/dummy.test.ts`.
 - **`worker-configuration.d.ts`** is gitignored and auto-generated via `wrangler types`.
 - All generated projects are **GPL-3.0-or-later**.

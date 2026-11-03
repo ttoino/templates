@@ -1,0 +1,15 @@
+.direnv
+node_modules
+
+# Output
+.output
+.wrangler
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
+!.env.example

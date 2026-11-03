@@ -10,7 +10,8 @@
             "customType": "regex",
             "description": "Bump npm/pnpm deps in package.json.jinja templates",
             "managerFilePatterns": [
-                "**/worker/package.json.jinja",
+                "**/hono-worker/package.json.jinja",
+                "**/static-worker/package.json.jinja",
                 "**/sveltekit/package.json.jinja",
                 "**/svelte-library/package.json.jinja"
             ],
@@ -25,7 +26,8 @@
             "customType": "regex",
             "description": "Bump pnpm packageManager version",
             "managerFilePatterns": [
-                "**/worker/package.json.jinja",
+                "**/hono-worker/package.json.jinja",
+                "**/static-worker/package.json.jinja",
                 "**/sveltekit/package.json.jinja",
                 "**/svelte-library/package.json.jinja"
             ],

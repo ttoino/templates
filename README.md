@@ -29,7 +29,8 @@ copier update ~/projects/my-existing-app
 |------|-------------|
 | **general** | Minimal general-purpose project with Nix + Renovate |
 | **python** | Python package with uv, ruff, pyright, pytest, and optional CLI |
-| **worker** | Pure Hono-based Cloudflare Worker |
+| **hono-worker** | Hono-based Cloudflare Worker |
+| **static-worker** | Static files only Cloudflare Worker |
 | **sveltekit** | Full SvelteKit app deployed to Cloudflare Workers/Pages |
 | **svelte-library** | Svelte component library |
 
