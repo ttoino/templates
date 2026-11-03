@@ -26,6 +26,12 @@ jobs:
             tests: "true"
           - name: static-worker
             project_type: static-worker
+          - name: rust-binary
+            project_type: rust
+            crate_type: "binary"
+          - name: rust-library
+            project_type: rust
+            crate_type: "library"
           - name: sveltekit
             project_type: sveltekit
             tailwind: "true"
@@ -57,6 +63,7 @@ jobs:
             "--data" "project_type=${{ matrix.project_type }}"
           )
           [[ -n "${{ matrix.cli }}" ]] && DATA_ARGS+=("--data" "cli=${{ matrix.cli }}")
+          [[ -n "${{ matrix.crate_type }}" ]] && DATA_ARGS+=("--data" "crate_type=${{ matrix.crate_type }}")
           [[ -n "${{ matrix.tailwind }}" ]] && DATA_ARGS+=("--data" "tailwind=${{ matrix.tailwind }}")
           [[ -n "${{ matrix.svelte_m3c }}" ]] && DATA_ARGS+=("--data" "svelte_m3c=${{ matrix.svelte_m3c }}")
           [[ -n "${{ matrix.tests }}" ]] && DATA_ARGS+=("--data" "tests=${{ matrix.tests }}")
@@ -89,9 +96,24 @@ jobs:
           uv run pyright
           uv run pytest
 
+      # Rust templates
+      - name: Set up Rust
+        if: matrix.project_type == 'rust'
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Check Rust project
+        if: matrix.project_type == 'rust'
+        working-directory: "${{ runner.temp }}/generated"
+        run: |
+          cargo fmt --check
+          cargo clippy --all-targets -- -D warnings
+          cargo test
+
       # Node/TypeScript templates
       - name: Get pnpm version
-        if: matrix.project_type != 'general' && matrix.project_type != 'python'
+        if: matrix.project_type != 'general' && matrix.project_type != 'python' && matrix.project_type != 'rust'
         id: pnpm-version
         working-directory: "${{ runner.temp }}/generated"
         run: |
@@ -99,17 +121,17 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Install Node
-        if: matrix.project_type != 'general' && matrix.project_type != 'python'
+        if: matrix.project_type != 'general' && matrix.project_type != 'python' && matrix.project_type != 'rust'
         uses: actions/setup-node@v7
         with:
           node-version: 26
 
       - name: Install pnpm
-        if: matrix.project_type != 'general' && matrix.project_type != 'python'
+        if: matrix.project_type != 'general' && matrix.project_type != 'python' && matrix.project_type != 'rust'
         run: npm install -g pnpm@${{ steps.pnpm-version.outputs.version }}
 
       - name: Get pnpm store directory
-        if: matrix.project_type != 'general' && matrix.project_type != 'python'
+        if: matrix.project_type != 'general' && matrix.project_type != 'python' && matrix.project_type != 'rust'
         id: pnpm-cache
         working-directory: "${{ runner.temp }}/generated"
         run: |
@@ -117,14 +139,14 @@ jobs:
           echo "LOCK_HASH=$(sha256sum pnpm-lock.yaml | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
 
       - name: Setup pnpm cache
-        if: matrix.project_type != 'general' && matrix.project_type != 'python'
+        if: matrix.project_type != 'general' && matrix.project_type != 'python' && matrix.project_type != 'rust'
         uses: actions/cache@v6
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
           key: pnpm-${{ runner.os }}-${{ steps.pnpm-cache.outputs.LOCK_HASH }}
 
       - name: Install dependencies
-        if: matrix.project_type != 'general' && matrix.project_type != 'python'
+        if: matrix.project_type != 'general' && matrix.project_type != 'python' && matrix.project_type != 'rust'
         working-directory: "${{ runner.temp }}/generated"
         run: pnpm install
 
@@ -141,12 +163,12 @@ jobs:
         run: pnpm exec playwright install --with-deps
 
       - name: Run format
-        if: matrix.project_type != 'general' && matrix.project_type != 'python'
+        if: matrix.project_type != 'general' && matrix.project_type != 'python' && matrix.project_type != 'rust'
         working-directory: "${{ runner.temp }}/generated"
         run: pnpm run format
 
       - name: Run lint
-        if: matrix.project_type != 'general' && matrix.project_type != 'python' && matrix.project_type != 'static-worker'
+        if: matrix.project_type != 'general' && matrix.project_type != 'python' && matrix.project_type != 'static-worker' && matrix.project_type != 'rust'
         working-directory: "${{ runner.temp }}/generated"
         run: pnpm run lint
 
@@ -156,16 +178,16 @@ jobs:
         run: pnpm run gen:cf-types
 
       - name: Run typecheck
-        if: matrix.project_type != 'general' && matrix.project_type != 'python' && matrix.project_type != 'static-worker'
+        if: matrix.project_type != 'general' && matrix.project_type != 'python' && matrix.project_type != 'static-worker' && matrix.project_type != 'rust'
         working-directory: "${{ runner.temp }}/generated"
         run: pnpm run check
 
       - name: Run build
-        if: matrix.project_type != 'general' && matrix.project_type != 'python' && matrix.project_type != 'static-worker'
+        if: matrix.project_type != 'general' && matrix.project_type != 'python' && matrix.project_type != 'static-worker' && matrix.project_type != 'rust'
         working-directory: "${{ runner.temp }}/generated"
         run: pnpm run build
 
       - name: Run tests
-        if: matrix.tests == 'true'
+        if: matrix.tests == 'true' && matrix.project_type != 'rust'
         working-directory: "${{ runner.temp }}/generated"
         run: pnpm run test
