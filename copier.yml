@@ -24,6 +24,7 @@ project_type:
         Python package: python
         Cloudflare Worker (Hono): hono-worker
         Rust crate: rust
+        Static files Worker: static-worker
         SvelteKit app: sveltekit
         Svelte library: svelte-library
 
