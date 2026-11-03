@@ -2,7 +2,7 @@
 
 This is a [Copier](https://copier.readthedocs.io/) template repository that
 generates project scaffolding for several project types:
-`general`, `python`, `hono-worker`, `static-worker`, `sveltekit`, and `svelte-library`.
+`general`, `python`, `hono-worker`, `static-worker`, `rust`, `sveltekit`, and `svelte-library`.
 
 **This repo itself is not a runnable project** — there is no root `package.json`
 and no build step here.
@@ -28,10 +28,11 @@ and no build step here.
 |----------|------|---------|
 | `name` | str | Project name (kebab-case). Default: destination directory name. |
 | `description` | str | Project description. |
-| `project_type` | str | `general`, `python`, `hono-worker`, `static-worker`, `sveltekit`, or `svelte-library`. |
+| `project_type` | str | `general`, `python`, `hono-worker`, `static-worker`, `rust`, `sveltekit`, or `svelte-library`. |
 | `tailwind` | bool | Only for Svelte templates. |
 | `svelte_m3c` | bool | Only when `tailwind` is true. |
 | `cli` | bool | Only for `python`. |
+| `crate_type` | str | `binary` or `library`. Only for `rust`. |
 | `tests` | bool | Only for `hono-worker`, `sveltekit`, `svelte-library`. |
 | `browser_tests` | bool | Only when `tests` is true for Svelte templates. |
 
@@ -45,6 +46,7 @@ and no build step here.
 - **Wrangler**: `not_found_handling: "none"`, observability enabled,
   `build.command: "pnpm build"`, empty `previews`, `upload_source_maps: true`.
 - **Python**: `>=3.13`, `uv`, `tox`, `ruff`, `pyright`, `pytest`.
+- **Rust**: edition 2024, `cargo`, `clippy`, `rustfmt`, inline `#[cfg(test)]` modules.
 - **CI/CD**: Node templates use the shared `.github/actions/setup-project`
   composite action. Python and general templates use their own lightweight
   workflows.

@@ -1,0 +1,30 @@
+# {{ name }}
+
+{{ description }}
+
+## Development
+
+This project uses Cargo and includes a Nix flake for the development environment.
+
+If you use direnv, run:
+
+```bash
+direnv allow
+```
+
+Otherwise enter the shell with:
+
+```bash
+nix develop
+```
+
+## Commands
+
+- `cargo build` — build the project
+- `cargo test` — run tests
+- `cargo clippy` — lint
+- `cargo fmt` — format
+
+## License
+
+GPL-3.0-or-later

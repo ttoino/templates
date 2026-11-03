@@ -1,0 +1,11 @@
+[package]
+name = "{{ name | replace('-', '_') }}"
+version = "0.1.0"
+edition = "2024"
+description = "{{ description }}"
+license = "GPL-3.0-or-later"
+
+[dependencies]
+
+[lints.rust]
+unsafe_code = "forbid"

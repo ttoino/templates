@@ -1,0 +1,54 @@
+# AGENTS.md
+
+## Project Overview
+
+{% if description %}{{ description }}
+
+{% endif %}**Type**: Rust crate ({% if crate_type == 'binary' %}binary{% else %}library{% endif %})
+**Rust edition**: 2024
+**Package Manager**: Cargo
+
+## Development Environment
+
+A Nix flake is present for local dev. If using direnv, it loads automatically:
+
+```bash
+direnv allow
+```
+
+Otherwise:
+
+```bash
+nix develop
+```
+
+The flake provides `cargo`, `rustc`, `clippy`, and `rustfmt`.
+
+## Commands
+
+- `cargo build` — build
+- `cargo test` — run tests (inline `#[cfg(test)]` modules)
+- `cargo clippy` — lint
+- `cargo fmt` — format
+
+## CI Pipeline
+
+GitHub Actions runs on PRs/pushes to `main`/`develop`:
+
+1. `fmt` — `cargo fmt --check`
+2. `clippy` — `cargo clippy --all-targets -- -D warnings`
+3. `test` — `cargo test`
+
+## Code Style
+
+- `rustfmt` with edition 2024
+- `clippy` with warnings denied in CI
+- Unit tests are colocated with source in `#[cfg(test)]` modules
+
+## Dependency Automation
+
+This project uses **Renovate** for dependency updates. Renovate opens a single monthly PR grouping all Cargo, GitHub Actions, and Nix input updates, plus a monthly lock-file maintenance PR that refreshes `Cargo.lock`.
+
+## License
+
+GPL-3.0-or-later

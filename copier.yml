@@ -23,6 +23,7 @@ project_type:
         General-purpose: general
         Python package: python
         Cloudflare Worker (Hono): hono-worker
+        Rust crate: rust
         SvelteKit app: sveltekit
         Svelte library: svelte-library
 
@@ -44,6 +45,15 @@ cli:
     default: false
     when: "{{ project_type == 'python' }}"
 
+crate_type:
+    type: str
+    help: What kind of Rust crate?
+    default: binary
+    choices:
+        Binary: binary
+        Library: library
+    when: "{{ project_type == 'rust' }}"
+
 tests:
     type: bool
     help: Include tests?
@@ -62,5 +72,5 @@ _message_after_copy: |
     Next steps:
     1. cd {{ _copier_conf.dst_path }}
     2. direnv allow  # if using direnv, or: nix develop
-    3. {% if project_type == 'python' %}uv sync{% else %}pnpm install{% endif %}
-    4. {% if project_type == 'python' %}uv run pytest{% else %}pnpm dev{% endif %}
+    3. {% if project_type == 'python' %}uv sync{% elif project_type == 'rust' %}cargo build{% else %}pnpm install{% endif %}
+    4. {% if project_type == 'python' %}uv run pytest{% elif project_type == 'rust' %}cargo test{% else %}pnpm dev{% endif %}

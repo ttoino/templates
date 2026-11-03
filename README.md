@@ -31,6 +31,7 @@ copier update ~/projects/my-existing-app
 | **python** | Python package with uv, ruff, pyright, pytest, and optional CLI |
 | **hono-worker** | Hono-based Cloudflare Worker |
 | **static-worker** | Static files only Cloudflare Worker |
+| **rust** | Rust crate with Cargo, Clippy, and rustfmt |
 | **sveltekit** | Full SvelteKit app deployed to Cloudflare Workers/Pages |
 | **svelte-library** | Svelte component library |
 
@@ -45,6 +46,7 @@ copier update ~/projects/my-existing-app
 - **Playwright** (optional, Svelte templates)
 - **Cloudflare Workers** deployment via Wrangler (Worker, SvelteKit)
 - **Python 3.13** + **uv** + **tox** (Python template)
+- **Rust 2024** + **Cargo** (Rust template)
 - **Nix flake** for reproducible dev environment
 - **Renovate** dependency automation
 - **GitHub Actions** CI (and CD for libraries)
