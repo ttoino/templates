@@ -38,24 +38,24 @@ copier update ~/projects/my-existing-app
 ## Features
 
 - **TypeScript** strict mode (Node, Worker, Svelte)
-- **Svelte 5** + SvelteKit 2 (Svelte templates)
-- **Tailwind CSS v4** (optional, Svelte templates)
+- **Svelte** + SvelteKit (Svelte templates)
+- **Tailwind CSS** (optional, Svelte templates)
 - **svelte-m3c** Material Design 3 (optional, Svelte templates)
 - **ESLint** + **Prettier** with perfectionist plugin
 - **Vitest** unit and/or browser tests (optional)
 - **Playwright** (optional, Svelte templates)
 - **Cloudflare Workers** deployment via Wrangler (Worker, SvelteKit)
-- **Python 3.13** + **uv** + **tox** (Python template)
-- **Rust 2024** + **Cargo** (Rust template)
+- **Python** + **uv** + **tox** (Python template)
+- **Rust** + **Cargo** (Rust template)
 - **Nix flake** for reproducible dev environment
 - **Renovate** dependency automation
-- **GitHub Actions** CI (and CD for libraries)
+- **GitHub Actions** CI
 
 ## Standardized Conventions
 
 All projects generated from this template follow consistent conventions:
 
-- **pnpm 11.2.2** as package manager (Node/TypeScript templates)
+- **pnpm** as package manager (Node/TypeScript templates)
 - **4-space tabs**, **double quotes**, **trailing commas all**
 - **Alphabetical imports/exports** via ESLint perfectionist
 - **`<script lang="ts">`** enforced in all Svelte files
@@ -67,7 +67,3 @@ All projects generated from this template follow consistent conventions:
 This repo intentionally contains multiple self-contained Copier templates. Each
 template lives in its own top-level directory and duplicates shared boilerplate
 so that generated projects remain independent and easy to evolve separately.
-
-## License
-
-GPL-3.0-or-later

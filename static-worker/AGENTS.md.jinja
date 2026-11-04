@@ -6,7 +6,7 @@
 
 {% endif %}**Type**: Cloudflare Worker (static files only)
 **Runtime**: Cloudflare Workers Static Assets
-**Package Manager**: pnpm 11.28.10
+**Package Manager**: pnpm
 
 ## Development Environment
 
@@ -31,7 +31,7 @@ nix develop
 ## CI Pipeline
 
 GitHub Actions runs formatting checks on PRs/pushes to `main`/`develop`.
-All jobs use `pnpm install --frozen-lockfile`.
+All jobs use the `./.github/actions/setup-project` composite action.
 
 ## Architecture Notes
 
@@ -55,4 +55,4 @@ This project uses **Renovate** for dependency updates. Renovate opens a single m
 
 ## Deployment
 
-Cloudflare Workers via Wrangler. The static site is deployed through the Cloudflare dashboard, not via CI.
+Cloudflare Workers via Wrangler. Deploy through the Cloudflare dashboard or add a CI/CD workflow.

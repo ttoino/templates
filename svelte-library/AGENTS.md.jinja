@@ -4,8 +4,8 @@
 
 {% if description %}{{ description }}
 
-{% endif %}**Type**: Svelte library{% if tailwind %} + Tailwind CSS v4{% endif %}{% if svelte_m3c %} + svelte-m3c{% endif %}
-**Package Manager**: pnpm 11.2.2
+{% endif %}**Type**: Svelte library{% if tailwind %} + Tailwind CSS{% endif %}{% if svelte_m3c %} + svelte-m3c{% endif %}
+**Package Manager**: pnpm
 
 ## Development Environment
 
@@ -30,9 +30,9 @@ nix develop
 - `pnpm lint`: ESLint
 - `pnpm lint:fix`: ESLint with auto-fix
 - `pnpm format`: Prettier check
-- `pnpm format:fix`: Prettier write
-{% if tests %}- `pnpm test`: Run tests{% if browser_tests %} (including browser tests){% endif %}
-{% endif %}
+- `pnpm format:fix`: Prettier write{% if tests %}
+- `pnpm test`: Run tests{% if browser_tests %} (including browser tests){% endif %}{% endif %}
+
 ## CI Pipeline
 
 GitHub Actions runs independent jobs on PRs/pushes to `main`/`develop`:
@@ -43,8 +43,7 @@ GitHub Actions runs independent jobs on PRs/pushes to `main`/`develop`:
 {% if tests %}4. `test` — Vitest{% if browser_tests %} (including browser tests){% endif %}
 5. `build` — Package the library
 {% else %}4. `build` — Package the library
-{% endif %}
-All jobs use `pnpm install --frozen-lockfile`.
+{% endif %}All jobs use the `./.github/actions/setup-project` composite action.
 
 ## Architecture Notes
 
@@ -77,4 +76,4 @@ This project uses **Renovate** for dependency updates. Renovate opens a single m
 
 ## Deployment
 
-Published as an npm package. The GitHub Actions `cd.yml` workflow handles publishing on version tags.
+Published as an npm package. The GitHub Actions `cd.yml` workflow publishes on version tags.

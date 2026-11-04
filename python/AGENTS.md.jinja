@@ -5,7 +5,6 @@
 {% if description %}{{ description }}
 
 {% endif %}**Type**: Python package{% if cli %} + CLI{% endif %}
-**Python**: >=3.13
 **Package Manager**: uv
 **Test Runner**: pytest / tox
 
@@ -23,34 +22,40 @@ Otherwise:
 nix develop
 ```
 
-The flake provides `uv`, `python3.13`, and `tox`.
+The flake provides uv and Python.
 
 ## Commands
 
-- `uv sync` — install default dev tools (ruff, pyright, pytest)
-- `uv sync --extra dev` — install default dev tools plus tox
+- `uv sync` — install dependencies and dev tools
 - `uv run pytest` — run tests
 - `uv run ruff check .` — lint
 - `uv run ruff format .` — format
 - `uv run pyright` — typecheck
-- `tox` — run the full test matrix (py313, lint, type)
-{% if cli %}- `uv run {{ name }}` — run the CLI
-{% endif %}
+- `tox` — run the full test matrix{% if cli %}
+- `uv run {{ name }}` — run the CLI{% endif %}
+
 ## CI Pipeline
 
-GitHub Actions runs on PRs/pushes to `main`/`develop`:
+GitHub Actions runs independent jobs on PRs/pushes to `main`/`develop`:
 
-1. `lint` — `ruff check .`
-2. `typecheck` — `pyright`
-3. `test` — `pytest`
+1. `lint` — ruff
+2. `typecheck` — pyright
+3. `test` — pytest
 
-All jobs use `uv` and `python3.13`.
+All jobs use uv.
 
 ## Code Style
 
-**Ruff**: 88-character line length, target Python 3.13, select `E`, `F`, `I`, `N`, `W`, `UP`.
+**Ruff**: linting, formatting, and import sorting.
 
-**Pyright**: strict mode on `src/`, Python 3.13.
+**Pyright**: strict type checking on `src/`.
+
+## Important Files
+
+- `pyproject.toml`: project metadata, dependencies, and tool configuration
+- `src/{{ name | replace('-', '_') }}/`: source code
+- `tests/`: pytest suite
+- `flake.nix`: Nix development shell
 
 ## Dependency Automation
 
@@ -58,4 +63,4 @@ This project uses **Renovate** for dependency updates. Renovate opens a single m
 
 ## Deployment
 
-Published as a Python package to PyPI. The GitHub Actions `cd.yml` workflow handles publishing on version tags.
+Published as a Python package. No automated publishing workflow is included by default; use `uv build` and publish manually or add a CI/CD workflow.

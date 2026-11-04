@@ -38,15 +38,15 @@ and no build step here.
 
 ## Important conventions
 
-- **pnpm 11.2.2** in generated Node/TypeScript projects (`packageManager`).
+- **pnpm** in generated Node/TypeScript projects (`packageManager`).
 - **NodeNext** module resolution for Svelte projects; **bundler** for `hono-worker`.
 - **Prettier**: 4-space indent, double quotes, trailing commas all. YAML 2-space.
 - **ESLint**: `typescript-eslint` strict + `perfectionist/recommended-alphabetical`.
 - **Svelte**: All `.svelte` files must use `<script lang="ts">`.
 - **Wrangler**: `not_found_handling: "none"`, observability enabled,
   `build.command: "pnpm build"`, empty `previews`, `upload_source_maps: true`.
-- **Python**: `>=3.13`, `uv`, `tox`, `ruff`, `pyright`, `pytest`.
-- **Rust**: edition 2024, `cargo`, `clippy`, `rustfmt`, inline `#[cfg(test)]` modules.
+- **Python**: `uv`, `tox`, `ruff`, `pyright`, `pytest`.
+- **Rust**: `cargo`, `clippy`, `rustfmt`, inline `#[cfg(test)]` modules.
 - **CI/CD**: Node templates use the shared `.github/actions/setup-project`
   composite action. Python and general templates use their own lightweight
   workflows.

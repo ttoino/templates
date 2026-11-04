@@ -5,7 +5,6 @@
 {% if description %}{{ description }}
 
 {% endif %}**Type**: Rust crate ({% if crate_type == 'binary' %}binary{% else %}library{% endif %})
-**Rust edition**: 2024
 **Package Manager**: Cargo
 
 ## Development Environment
@@ -22,7 +21,7 @@ Otherwise:
 nix develop
 ```
 
-The flake provides `cargo`, `rustc`, `clippy`, and `rustfmt`.
+The flake provides Cargo, rustc, Clippy, and rustfmt.
 
 ## Commands
 
@@ -33,7 +32,7 @@ The flake provides `cargo`, `rustc`, `clippy`, and `rustfmt`.
 
 ## CI Pipeline
 
-GitHub Actions runs on PRs/pushes to `main`/`develop`:
+GitHub Actions runs independent jobs on PRs/pushes to `main`/`develop`:
 
 1. `fmt` — `cargo fmt --check`
 2. `clippy` — `cargo clippy --all-targets -- -D warnings`
@@ -41,14 +40,20 @@ GitHub Actions runs on PRs/pushes to `main`/`develop`:
 
 ## Code Style
 
-- `rustfmt` with edition 2024
+- `rustfmt` for formatting
 - `clippy` with warnings denied in CI
 - Unit tests are colocated with source in `#[cfg(test)]` modules
+
+## Important Files
+
+- `Cargo.toml`: crate metadata and dependencies
+- `src/{% if crate_type == 'binary' %}main.rs{% else %}lib.rs{% endif %}`: crate entry point
+- `flake.nix`: Nix development shell
 
 ## Dependency Automation
 
 This project uses **Renovate** for dependency updates. Renovate opens a single monthly PR grouping all Cargo, GitHub Actions, and Nix input updates, plus a monthly lock-file maintenance PR that refreshes `Cargo.lock`.
 
-## License
+## Deployment
 
-GPL-3.0-or-later
+{% if crate_type == 'binary' %}Deploy the built binary as appropriate for the target environment. No deployment workflow is included by default.{% else %}Published as a Rust crate. No automated publishing workflow is included by default; use `cargo publish` manually or add a CI/CD workflow.{% endif %}
