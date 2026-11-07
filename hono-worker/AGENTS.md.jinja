@@ -41,10 +41,14 @@ GitHub Actions runs independent jobs on PRs/pushes to `main`/`develop`:
 1. `format` — Prettier formatting
 2. `lint` — ESLint with TypeScript and Perfectionist
 3. `typecheck` — generate Cloudflare types, then `tsc --noEmit`
-{% if tests %}4. `test` — Vitest
+{%- if tests %}
+4. `test` — Vitest
 5. `build` — TypeScript build
-{% else %}4. `build` — TypeScript build
-{% endif %}All jobs use the `./.github/actions/setup-project` composite action.
+{%- else %}
+4. `build` — TypeScript build
+{%- endif %}
+
+All jobs use the `./.github/actions/setup-project` composite action.
 
 ## Architecture Notes
 
