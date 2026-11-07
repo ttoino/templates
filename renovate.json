@@ -3,6 +3,7 @@
     "extends": ["config:recommended"],
     "dependencyDashboard": false,
     "schedule": ["* 0-3 1 * *"],
+    "updateNotScheduled": false,
     "prConcurrentLimit": 4,
     "ignoreDeps": ["version", "type", "packageManager", "requires-python"],
     "customManagers": [
