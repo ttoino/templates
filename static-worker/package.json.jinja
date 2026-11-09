@@ -2,6 +2,14 @@
     "name": "{{ name }}",
     "version": "0.0.1",
     "description": "{{ description }}",
+{%- if github_user %}
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/{{ github_user }}/{{ name }}.git"
+    },
+    "homepage": "https://github.com/{{ github_user }}/{{ name }}",
+    "bugs": "https://github.com/{{ github_user }}/{{ name }}/issues",
+{%- endif %}
     "type": "module",
     "scripts": {
         "deploy": "wrangler deploy",
