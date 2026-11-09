@@ -88,4 +88,6 @@ This project uses **Renovate** for dependency updates. Renovate opens a single m
 
 Published as an npm package. The GitHub Actions `cd.yml` workflow publishes on version tags.
 
-The docs site can be deployed to Cloudflare Workers/Pages via Wrangler.
+The docs site can be deployed to Cloudflare Workers/Pages via Wrangler. Run `pnpm run build` before `wrangler deploy`.
+
+When using the Cloudflare dashboard Git integration, set the build command to `pnpm build` so `wrangler deploy` does not build twice.
