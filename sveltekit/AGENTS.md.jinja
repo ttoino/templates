@@ -45,9 +45,9 @@ GitHub Actions runs independent jobs on PRs/pushes to `main`/`develop`:
 3. `typecheck` — generate Cloudflare types, then `svelte-check`
 {%- if tests %}
 4. `test` — Vitest{% if browser_tests %} (including browser tests){% endif %}
-5. `build` — Production build
+5. `build` — generate Cloudflare types, then production build
 {%- else %}
-4. `build` — Production build
+4. `build` — generate Cloudflare types, then production build
 {%- endif %}
 
 All jobs use the `./.github/actions/setup-project` composite action.
