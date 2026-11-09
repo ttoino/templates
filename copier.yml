@@ -67,6 +67,12 @@ browser_tests:
     default: false
     when: "{{ tests and project_type in ['sveltekit', 'svelte-library'] }}"
 
+github_user:
+    type: str
+    help: GitHub username or organization (used for package.json repository metadata)
+    default: "ttoino"
+    when: "{{ project_type in ['sveltekit', 'svelte-library', 'hono-worker', 'static-worker'] }}"
+
 _message_after_copy: |
     Project "{{ name }}" created successfully!
 
